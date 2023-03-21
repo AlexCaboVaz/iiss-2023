@@ -1,23 +1,22 @@
-class Perro:
-    def __init__(self, nombre):
-        self.nombre = nombre
+class Motor:
+    def encender(self):
+        print("El motor está encendido.")
+        
+    def apagar(self):
+        print("El motor está apagado.")
+        
+class Coche:
+    def __init__(self, motor):
+        self.motor = motor
+        
+    def encender(self):
+        self.motor.encender()
+        
+    def apagar(self):
+        self.motor.apagar()
 
-    def ladrar(self):
-        return "Guau!"
+motor = Motor()
+coche = Coche(motor)
 
-class Persona:
-    def __init__(self, nombre, mascota):
-        self.nombre = nombre
-        self.mascota = mascota
-
-    def presentar_mascota(self):
-        return f"Mi nombre es {self.nombre} y esta es mi mascota {self.mascota.nombre}. Dice {self.mascota.ladrar()}"
-
-# Creamos una instancia de la clase Perro
-mi_perro = Perro("Fido")
-
-# Creamos una instancia de la clase Persona, pasando el perro como parámetro
-yo = Persona("Juan", mi_perro)
-
-# Llamamos al método presentar_mascota de la clase Persona, que utiliza la función ladrar del perro
-print(yo.presentar_mascota())
+coche.encender() # Output: El motor está encendido.
+coche.apagar() # Output: El motor está apagado.
