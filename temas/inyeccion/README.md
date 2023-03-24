@@ -1,44 +1,97 @@
-# Ejemplo de inyección de dependencias en Ruby
-* Este código muestra cómo usar la inyección de dependencias en Ruby para gestionar una flota de coches.
+# Ejemplo de inyección de dependencias en C#
 
-## Clases
-* El código define tres clases:
+## Descripción
+* Este ejemplo muestra cómo implementar la inyección de dependencias en una aplicación de consola simple en C#. Se utilizó el framework .NET Core 3.1 para este ejemplo
 
-### Coche
-* La clase Coche representa un coche con una marca, modelo y disponibilidad. Tiene los siguientes métodos:
+## Qué es la Inyección de Dependencias?
+* La inyección de dependencias es un patrón de diseño que se utiliza para desacoplar los componentes de una aplicación. En lugar de crear explícitamente cada objeto que necesita una clase, la clase solicita el objeto a través de la D
 
-1. initialize(marca, modelo, disponible = true): Crea un nuevo objeto Coche con los atributos especificados. Por defecto, un coche se crea como disponible.
-disponible?: Devuelve true si el coche está disponible, o false si no lo está.
+## Como usar la Inyección de Dependencias en una aplicación C#
+* En este ejemplo, tenemos una interfaz ISaludoService que define un método Saludar y una implementación SaludoService que implementa la interfaz ISaludoService y devuelve un saludo con el nombre dado.
 
-2. reservar!: Marca el coche como no disponible.
+~~~
+public interface ISaludoService
+{
+    string Saludar(string nombre);
+}
 
-3. RepositorioDeCoches
-- La clase RepositorioDeCoches representa un repositorio de coches. Tiene los siguientes métodos:
+public class SaludoService : ISaludoService
+{
+    public string Saludar(string nombre)
+    {
+        return $"Hola, {nombre}!";
+    }
+}
+~~~
 
-1. initialize: Crea un nuevo objeto RepositorioDeCoches vacío.
-añadir_coche(coche): Añade un objeto Coche al repositorio.
+* Luego, tenemos una clase App que tiene una dependencia de ISaludoService. En lugar de crear explícitamente una instancia de SaludoService dentro de App, pasamos una instancia de ISaludoService como argumento al constructor de App.
 
-2. todos_los_coches: Devuelve un array con todos los objetos Coche del repositorio.
+~~~
+public class App
+{
+    private readonly ISaludoService _saludoService;
 
-## GestorDeFlota
-* La clase GestorDeFlota representa un gestor de flota de coches. Tiene los siguientes métodos:
+    public App(ISaludoService saludoService)
+    {
+        _saludoService = saludoService;
+    }
 
-1. initialize(repositorio_de_coches): Crea un nuevo objeto GestorDeFlota con el repositorio de coches especificado.
-coches_disponibles: Devuelve un array con todos los objetos Coche del repositorio que estén disponibles.
+    public void Run()
+    {
+        Console.WriteLine(_saludoService.Saludar("Juan"));
+    }
+}
+~~~
 
-2. reservar_coche(coche): Marca el coche especificado como no disponible.
+* En la configuración del contenedor de servicios, registramos la implementación SaludoService para el tipo ISaludoService utilizando el método AddSingleton. Esto significa que cada vez que se solicite una instancia de ISaludoService, el contenedor de servicios devolverá la misma instancia de SaludoService.
 
-## Uso
-* El código crea tres objetos Coche y un objeto RepositorioDeCoches. Luego, añade los tres coches al repositorio, y crea un objeto GestorDeFlota con el repositorio.
+~~~
+var services = new ServiceCollection();
+services.AddSingleton<ISaludoService, SaludoService>();
+~~~
 
-* Finalmente, se llaman a los métodos coches_disponibles y reservar_coche en el gestor.
+* Luego, registramos App como un tipo transitorio utilizando el método AddTransient. Esto significa que cada vez que se solicite una instancia de App, el contenedor de servicios creará una nueva instancia de App y pasará una instancia de ISaludoService como argumento al constructor de App.
 
-* La salida del código muestra los coches disponibles y actualiza la lista después de reservar el primer coche.
+~~~
+services.AddTransient<App>();
+~~~
 
-## Resumen
-* La inyección de dependencias en Ruby permite separar el comportamiento de las clases de su implementación concreta.
+* Finalmente, en el método Main, utilizamos el contenedor de servicios para obtener una instancia de App y ejecutar su método Run. Esto significa que la instancia de App que se ejecuta tiene una dependencia inyectada de ISaludoService.
 
-* Las clases se comunican entre sí a través de interfaces y no conocen la implementación concreta de otras clases.
+~~~
+var serviceProvider = services.BuildServiceProvider();
+var app = serviceProvider.GetService<App>();
+app.Run();
+~~~
 
-* En este ejemplo, la clase GestorDeFlota depende del repositorio de coches, pero no sabe cómo está implementado.
-* Esto hace que el código sea más flexible y fácil de mantener.
+
+
+## Cómo instalar y ejecutar el ejemplo en Visual Studio Code
+* Abre Visual Studio Code y crea un nuevo archivo con la extensión .cs.
+
+* Copia el código del ejemplo en el archivo.
+
+* Abre la terminal en Visual Studio Code.
+
+* Instala el SDK de .NET Core si aún no lo has hecho (puedes descargarlo desde la página oficial de .NET):
+
+~~~
+dotnet --version
+~~~
+* En la terminal, navega al directorio donde se encuentra el archivo que acabas de crear:
+
+~~~
+cd <directorio>
+~~~
+
+* Compila y ejecuta el archivo con el comando:
+
+~~~
+dotnet run
+~~~
+
+* Deberías ver la salida de la aplicación en la terminal:
+
+~~~
+Hola, Juan!
+~~~~
