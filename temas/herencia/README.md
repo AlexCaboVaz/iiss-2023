@@ -1,35 +1,63 @@
-# HERENCIA EN PYTHON
+# HERENCIA EN C#
 
-## Descripción
-* Este ejemplo muestra cómo utilizar la herencia en la programación orientada a objetos de Python para crear subclases que hereden atributos y métodos de una clase base. En este caso, la clase base es Coche, que tiene atributos como la marca, modelo, año y color del coche, y métodos como arrancar y apagar el coche.
+## Herencia
+* La herencia y los traits son dos características importantes de la programación orientada a objetos (POO) que se utilizan comúnmente en C# para crear clases más específicas y reutilizar código común en diferentes clases. En este archivo README.md, se explicará cómo se utiliza la herencia y los traits en un ejemplo simple en C#
 
-## Clases
-### Coche
-* Es la clase base que representa un coche y tiene los siguientes atributos y métodos:
+## Aplicacion de la herencia en el codigo.
+* La herencia en C# se logra utilizando la palabra clave "extends". Una clase derivada puede heredar todas las propiedades y métodos públicos de su clase base. En este ejemplo, definiremos una clase base "Vehiculo" que tiene algunas propiedades y métodos comunes a todos los vehículos. Luego crearemos una clase derivada "Automovil" que hereda de "Vehiculo" utilizando la palabra clave "extends" y agrega algunas propiedades y métodos adicionales específicos de los automóviles.
 
-1. Marca
-2. Modelo
-3. Año
-4. Color
-5. arrancar(): enciende el coche
-6. apagar(): apaga el coche
+~~~
+// Definimos una clase base "Vehiculo"
+class Vehiculo
+{
+    public string Marca { get; set; }
+    public string Modelo { get; set; }
+    public int Año { get; set; }
 
-#### Sedan
-* Es una subclase de Coche que representa un coche sedán. Hereda los atributos y métodos de Coche y tiene un atributo adicional para el número de puertas y un método para abrir el baúl:
+    public void Arrancar()
+    {
+        Console.WriteLine("El vehículo ha arrancado");
+    }
+}
 
-1. Num_Puertas
-2. abrir_baul(): abre el baúl del coche
+// Definimos una clase derivada "Automovil" que hereda de "Vehiculo"
+class Automovil : Vehiculo
+{
+    public int Cilindrada { get; set; }
 
-#### SUV
-* Es otra subclase de Coche que representa un vehículo utilitario deportivo. Hereda los atributos y métodos de Coche y tiene un atributo adicional para el número de asientos y un método para abrir el área de carga:
+    public void Acelerar()
+    {
+        Console.WriteLine("El automóvil está acelerando");
+    }
+}
+~~~
 
-1. Num_Asientos
-2. abrir_area_carga(): abre el área de carga del vehículo
+* En este ejemplo, la clase "Vehiculo" es la clase base, y la clase "Automovil" hereda de ella utilizando la palabra clave "extends". La clase "Automovil" también agrega una propiedad adicional "Cilindrada" y un método adicional "Acelerar" que son específicos de los automóviles.
 
-## Funcionamiento de la herencia
-* En este ejemplo, se crean objetos de la clase Coche, Sedan y SUV, y se llaman a sus métodos respectivos para demostrar la herencia de atributos y métodos. La herencia permite que las subclases Sedan y SUV aprovechen los atributos y métodos de la clase base Coche, y también pueden agregar nuevos atributos y métodos según sea necesario.
+## Como se usan los traits en este ejemplo:
+* Los traits en C# se implementan utilizando la palabra clave "interface". Un trait define una interfaz común que implementan varias clases. En este ejemplo, definiremos un trait "IAerodinamico" para definir una interfaz común que implementan todos los vehículos aerodinámicos. La clase "Automovil" implementará este trait utilizando la palabra clave "interface" y proporcionará una implementación para el método "CalcularCoeficienteAerodinamico", que es definido por el trait
 
-* Por ejemplo, se crea un objeto carro de la clase Coche, un objeto sedan de la subclase Sedan, y un objeto suv de la subclase SUV. Luego se llaman a los métodos arrancar y apagar en cada objeto para iniciar y detener el coche respectivamente, y también se llaman a los métodos abrir_baul y abrir_area_carga en los objetos sedan y suv, respectivamente.
+~~~
+// Definimos un trait "IAerodinamico"
+interface IAerodinamico
+{
+    double CoeficienteAerodinamico { get; set; }
 
-## Beneficios de la herencia en programación
-* La herencia simplifica la reutilización de código al permitir que las subclases hereden atributos y métodos de la clase base. Además, permite crear jerarquías de clases que representen mejor la estructura de los objetos en el mundo real y facilita el mantenimiento del código al reducir la duplicación de código.
+    void CalcularCoeficienteAerodinamico();
+}
+
+// La clase "Automovil" implementa el trait "IAerodinamico"
+class Automovil : Vehiculo, IAerodinamico
+{
+    public int Cilindrada { get; set; }
+    public double CoeficienteAerodinamico { get; set; }
+
+    public void Acelerar()
+    {
+        Console.WriteLine("El automóvil está acelerando");
+    }
+
+    public void CalcularCoeficienteAerodinamico()
+    {
+        // Aquí se calcularía el coeficiente aerodinámico
+~~~
