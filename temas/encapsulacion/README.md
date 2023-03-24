@@ -24,7 +24,17 @@
 * La clase Empleado hereda los atributos y métodos de la clase Persona utilizando la palabra clave super. Además, se definen dos métodos de instancia adicionales:
 
      1. obtenerDireccion: llama al método protegido dirección de la clase Persona para obtener la dirección de la persona.
+     ~~~
+     def obtenerDireccion
+      dirección
+     end
+     ~~~
      2. verificarID: llama al método privado ComprobarID de la clase Persona para verificar la identidad del empleado.
+     ~~~
+     def verificarID(id)
+      ComprobarID(id)
+     end
+     ~~~
 ## Uso
 * Se crean una instancia de Persona llamada persona y una instancia de Empleado llamada empleado. Luego, se utilizan los métodos de instancia definidos para leer y escribir en los atributos de las instancias, y para verificar la identidad y la dirección de la persona y el empleado.
 
