@@ -12,11 +12,11 @@
      end
      ~~~
      2. ComprobarID: es un método privado que verifica la identidad de la persona, aunque la lógica específica para esta verificación no se define en este ejemplo.
-      ~~~
-      def ComprobarID(id)
-      # Lógica para verificar la identidad de la personaaa
-      end
-      ~~~
+     ~~~
+     def ComprobarID(id)
+     # Lógica para verificar la identidad de la personaaa
+     end
+     ~~~
 
 * También se define un método dirección como método protegido. Este método podría utilizarse para obtener la dirección de la persona, aunque la lógica específica para obtener la dirección no se define en este ejemplo.
 
