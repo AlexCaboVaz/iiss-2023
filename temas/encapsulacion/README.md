@@ -9,6 +9,9 @@
      2. ComprobarID: es un método privado que verifica la identidad de la persona, aunque la lógica específica para esta verificación no se define en este ejemplo.
 
 * También se define un método dirección como método protegido. Este método podría utilizarse para obtener la dirección de la persona, aunque la lógica específica para obtener la dirección no se define en este ejemplo.
+~~~
+Hola
+~~~
 
 ## Clase Empleado
 * La clase Empleado hereda los atributos y métodos de la clase Persona utilizando la palabra clave super. Además, se definen dos métodos de instancia adicionales:
