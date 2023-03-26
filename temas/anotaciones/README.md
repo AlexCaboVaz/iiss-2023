@@ -1,12 +1,23 @@
-# Anotacion de dependencias en Typescript
+# Anotación en Typescript
 
-## ¿Que es la anotacion de dependecias?
+## ¿Que es la anotacion?
 
-* La anotación de dependencias es una técnica de programación que permite inyectar objetos dependientes en una clase sin tener que crearlos explícitamente en la clase que los necesita. Esto se logra utilizando una anotación que describe qué dependencias requiere una clase, y un contenedor de inyección de dependencias que se encarga de crear e inyectar las dependencias cuando se crea la instancia de la clase. En resumen, la anotación de dependencias ayuda a separar la lógica de la creación de objetos y la lógica de negocio en una aplicación.
+* La anotación es una técnica de programación que permite inyectar objetos dependientes en una clase sin tener que crearlos explícitamente en la clase que los necesita. Esto se logra utilizando una anotación que describe qué dependencias requiere una clase, y un contenedor de inyección de dependencias que se encarga de crear e inyectar las dependencias cuando se crea la instancia de la clase. En resumen, la anotación de dependencias ayuda a separar la lógica de la creación de objetos y la lógica de negocio en una aplicación.
 
 ## Ejemplo: 
 
-* En este ejemplo, se muestra cómo se puede implementar la anotación de dependencias en TypeScript utilizando decoradores y tipos genéricos.
+* Este archivo contiene una aplicación de ejemplo que utiliza decoradores en TypeScript para inyectar dependencias en una clase. La aplicación se compone de una clase App y una clase Logger.
+
+* La clase Logger es una simple clase que tiene un método log() que toma una cadena y la imprime en la consola.
+
+~~~
+export class Logger {
+  log(message: string) {
+    console.log(message);
+  }
+}
+~~~
+
 
 * En primer lugar, se define un tipo genérico ClassType<T> que representa una clase con un constructor que puede tomar cualquier número de argumentos. Este tipo se utiliza más adelante en el decorador Inject.
 
@@ -14,53 +25,90 @@
 type ClassType<T> = { new (...args: any[]): T };
 ~~~
 
-* Luego se define el decorador Inject, que toma como argumento la clase que se va a inyectar como dependencia. Este decorador devuelve otra función que toma tres argumentos: el objeto que contiene la propiedad que se va a inyectar, el nombre de la propiedad y el índice del argumento en el constructor de la clase.
+
+* En este ejemplo, creamos una instancia de la clase Logger y la pasamos como argumento al constructor de la clase App. Luego, llamamos al método greet de la clase App, que a su vez llama al método log de la instancia de Logger que inyectamos previamente
 
 ~~~
-function Inject<T>(dependency: ClassType<T>) {
-  return function (target: any, propertyKey: string, index: number) {
-    target[propertyKey][index] = new dependency();
+import { Logger } from "./logger";
+
+class App {
+  logger: Logger;
+  constructor(logger: Logger) {
+    this.logger = logger;
+  }
+
+  greet() {
+    this.logger.log('Hola Mundo!!');
+  }
+}
+
+const logger = new Logger();
+const app = new App(logger);
+app.greet(); // Output: "Hola Mundo!!"
+~~~
+
+
+* Se utilizan dos decoradores para inyectar dependencias en la clase App. El primer decorador, InjectLogger, se encarga de inyectar una instancia de Logger en el constructor de la clase App. El segundo decorador, InjectMessage, se encarga de inyectar un mensaje en el método greet()
+
+* Para inyectar la instancia de Logger utilizando decoradores, podemos utilizar el decorador @InjectLogger de la siguiente manera:
+
+~~~
+function InjectLogger(target: any, propertyKey: string, index: number) {
+  target[propertyKey][index] = new Logger();
+}
+
+class App {
+  logger: Logger;
+  constructor(@InjectLogger logger: Logger) {
+    this.logger = logger;
+  }
+
+  greet() {
+    this.logger.log('Hola Mundo!!');
+  }
+}
+
+const app = new App();
+app.greet(); // Output: "Hola Mundo!!"
+
+~~~
+
+* En este caso, el decorador @InjectLogger se aplica a un parámetro del constructor de la clase App. El decorador reemplaza el valor del parámetro con una nueva instancia de Logger.
+
+* También podemos inyectar un mensaje personalizado en el método greet utilizando el decorador @InjectMessage de la siguiente manera:
+
+~~~
+function InjectMessage(message: string) {
+  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+    const originalMethod = descriptor.value;
+    descriptor.value = function (...args: any[]) {
+      console.log(message);
+      return originalMethod.apply(this, args);
+    };
+    return descriptor;
   };
 }
-~~~
 
-* En el constructor de la clase App, se declara una propiedad logger de tipo Logger. Esta propiedad se inicializa en el constructor de la clase mediante la creación de una nueva instancia de la clase Logger.
-
-~~~
 class App {
   logger: Logger;
-  constructor() {
-    this.logger = new Logger();
+  constructor(logger: Logger) {
+    this.logger = logger;
   }
-  
+
+  @InjectMessage('Hola Mundo!!')
   greet() {
-    this.logger.log('Hola Mundo!!');
+    this.logger.log('Logging from Logger instance injected by decorator!');
   }
 }
+
+const logger = new Logger();
+const app = new App(logger);
+app.greet(); // Output: "Hola Mundo!!", "Logging from Logger instance injected by decorator!"
 ~~~
 
-* En lugar de inicializar la propiedad logger directamente en el constructor, se puede utilizar el decorador Inject para inyectar la dependencia en la propiedad. Para ello, se debe decorar la propiedad logger con @Inject(Logger) y se debe eliminar la inicialización en el constructor.
+* En este caso, el decorador @InjectMessage se aplica al método greet de la clase App. El decorador modifica el comportamiento del método, imprimiendo el mensaje personalizado antes de llamar al método original.
 
-~~~
-class App {
-  @Inject(Logger)
-  logger: Logger;
-  
-  greet() {
-    this.logger.log('Hola Mundo!!');
-  }
-}
-~~~
-
-* Finalmente, se crea una instancia de la clase App y se llama al método greet.
-
-~~~
-const app = new App();
-app.greet();
-~~~
-
-* Este ejemplo muestra cómo se puede utilizar la anotación de dependencias en TypeScript para mejorar la modularidad y la flexibilidad del código. Con esta técnica, se pueden inyectar dependencias en las clases y hacer que el código sea más fácil de probar y mantener.
-
+* En este código hemos usado anotaciones para inyectar una dependencia (la clase Logger) y decorar un método (greet()) en la clase App. Al crear una instancia de la clase App, la anotación InjectLogger crea una instancia de Logger y la asigna a la propiedad correspondiente en la instancia de App. La anotación InjectMessage decora el método greet() para que imprima un mensaje personalizado antes de ejecutar el método original. De esta forma, las anotaciones nos permiten inyectar dependencias y decorar métodos de forma fácil y legible.
 
 ## Para ejecutar este código, es necesario tener instalado Node.js en el equipo.
 
