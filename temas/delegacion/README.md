@@ -24,12 +24,18 @@ class Coche
 }
 ~~~
 
-## Definimos el delegate ControladorCoche
+## Definimos EjecutarControlador
 
-* Luego, definimos el delegate ControladorCoche, que define la firma de los métodos que podemos asignar a una variable de este tipo. En este caso, el delegate recibe un objeto Coche como argumento y no devuelve ningún valor:
+* Verifica si el delegate es nulo antes de invocarlo.
 
 ~~~
-delegate void ControladorCoche(Coche coche);
+public static void EjecutarControlador(ControladorCoche controlador, Coche coche)
+    {
+        if (controlador != null)
+        {
+            controlador(coche);
+        }
+    }
 ~~~
 
 ## Uso de la delegación en el método Main
@@ -42,22 +48,23 @@ ControladorCoche miControlador = null;
 miControlador += AcelerarCoche;
 ~~~
 
-* Después, llamamos al delegate pasando como argumento el objeto Coche que queremos acelerar. Como miControlador apunta al método AcelerarCoche, se ejecuta este método y el coche acelera:
-
-~~~
-miControlador(miCoche);
-~~~
-
 * Luego, asignamos el método FrenarCoche al delegate mediante el operador +=. Esto significa que ahora miControlador apunta a ambos métodos:
 
 ~~~
 miControlador += FrenarCoche;
 ~~~
 
-* Finalmente, llamamos al delegate pasando como argumento el objeto Coche que queremos frenar. Como miControlador apunta a dos métodos, se ejecutan ambos métodos en el orden en que se han asignado. Primero se ejecuta AcelerarCoche, que aumenta la velocidad del coche en 10 km/h, y luego se ejecuta FrenarCoche, que disminuye la velocidad del coche en 10 km/h. Como resultado, la velocidad final del coche es 0 km/h:
+* Finalmente, el método EjecutarControlador toma el delegate y el objeto Coche como argumentos y verifica si el delegate es nulo antes de invocarlo. Al utilizar un método intermediario de esta manera, se puede agregar lógica adicional antes y después de la ejecución del delegate.
 
 ~~~
-miControlador(miCoche);
+EjecutarControlador(miControlador, miCoche);
+~~~
+## Evento delegate 
+
+* Esto convierte el delegate en un evento, lo que significa que solo se puede agregar o quitar métodos del delegate desde dentro de la clase que lo define. En otras palabras, no se puede invocar directamente el delegate desde fuera de la clase.
+
+~~~
+public event ControladorCoche MiEvento;
 ~~~
 
 ## Métodos AcelerarCoche y FrenarCoche
@@ -71,6 +78,8 @@ static void AcelerarCoche(Coche coche)
     Console.WriteLine("El coche ha acelerado a {0} km/h", coche.Velocidad);
 }
 
-static void FrenarCoche(Coche coche)
-{
+public static void FrenarCoche(Coche coche)
+    {
+        coche.Frenar();
+    }
 ~~~
