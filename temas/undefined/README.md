@@ -6,7 +6,7 @@ Option es una clase en la biblioteca estándar de Scala que representa una varia
 ## Cómo se ha implementado el código
 A continuación, se presenta un ejemplo de cómo se puede utilizar Option para manejar variables que pueden o no tener un valor asignado en Scala:
 
-´´´
+```
 case class Car(make: String, model: Option[String], year: Int)
 
 val car1 = Car("Toyota", Some("Corolla"), 2020)
@@ -21,7 +21,7 @@ def printCarModel(car: Car): Unit = {
 
 printCarModel(car1) // Output: The model of the car is: Corolla
 printCarModel(car2) // Output: The car has no model
-´´´
+```
 
 En este ejemplo, Car es una clase que representa un coche y tiene tres atributos: make, model y year. model es una variable de tipo Option[String], lo que significa que puede tener un valor Some (en este caso, un String que representa el modelo del coche) o None.
 
