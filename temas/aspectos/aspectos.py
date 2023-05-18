@@ -1,50 +1,39 @@
-import aspectlib
+import time
 
+def timing_aspect(func):
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        execution_time = end_time - start_time
+        print("Tiempo de ejecución: {:.2f} segundos".format(execution_time))
+        return result
+    return wrapper
 
-class Point:
-    def __init__(self, x=0, y=0):
-        self.x = x
-        self.y = y
+def division_aspect(func):
+    def wrapper(*args, **kwargs):
+        try:
+            result = func(*args, **kwargs)
+            print("Resultado de la división:", result)
+            return result
+        except ZeroDivisionError:
+            print("¡Error: División por cero!")
+    return wrapper
 
-    def get_x(self):
-        return self.x
+class Calculator:
+    @timing_aspect
+    def add(self, a, b):
+        return a + b
 
-    def get_y(self):
-        return self.y
+    @timing_aspect
+    @division_aspect
+    def divide(self, a, b):
+        return a / b
 
-    @aspectlib.Aspect
-    def set_x(self, x):
-        print(f"Setting x to {x}")
-        yield aspectlib.Return(self.x)
+calc = Calculator()
 
-    @aspectlib.Aspect
-    def set_y(self, y):
-        print(f"Setting y to {y}")
-        yield aspectlib.Return(self.y)
+result = calc.add(4564, 65465)
+print("Resultado de la suma:", result)
 
-
-class Line:
-    def __init__(self, p1=None, p2=None):
-        self.p1 = p1 if p1 is not None else Point()
-        self.p2 = p2 if p2 is not None else Point()
-
-    def get_p1(self):
-        return self.p1
-
-    def get_p2(self):
-        return self.p2
-
-    def set_p1(self, p1):
-        self.p1 = p1
-
-    def set_p2(self, p2):
-        self.p2 = p2
-
-
-point = Point()
-point.set_x(10)
-point.set_y(20)
-line = Line()
-line.set_p1(point)
-line.set_p2(Point(30, 40))
-
+calc.divide(564654, 2)
+calc.divide(5, 0)

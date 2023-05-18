@@ -1,80 +1,69 @@
-# Ejemplo de uso de aspectos en Python con AspectLib
+#Aspectos
 
-Este ejemplo muestra cómo aplicar aspectos en Python utilizando la biblioteca AspectLib. Los aspectos son una técnica de programación que permite separar las preocupaciones transversales de un programa en módulos separados y reutilizables, lo que hace que el código sea más modular, fácil de entender y mantener.
+## Aspectos en el código de ejemplo
+En el código de ejemplo, se implementan dos aspectos: timing_aspect y division_aspect. Estos aspectos se aplican a los métodos add y divide de la clase Calculator, respectivamente.
 
-## Estructura del código
-
-El código de este ejemplo consta de dos clases: Point y Line. La clase Point representa un punto en un sistema de coordenadas cartesianas, mientras que la clase Line representa una línea que conecta dos puntos.
-
-La clase Point tiene dos atributos: x e y, que representan las coordenadas del punto. La clase Line tiene dos atributos: p1 y p2, que representan los puntos finales de la línea.
-
-Ambas clases tienen métodos get_x() y get_y() que devuelven las coordenadas x e y del punto, y métodos set_x() y set_y() que establecen las coordenadas x e y del punto.
-
-## Aplicando aspectos en Python con AspectLib
-Para aplicar aspectos en Python con AspectLib, debemos seguir los siguientes pasos:
-
-1. Importar la biblioteca aspectlib.
-2. Definir una función que se ejecutará antes o después de la función original, es decir, el aspecto. Esta función debe tener un argumento next_func, que representa la función original que se va a modificar.
-3. Utilizar el decorador @aspectlib.Aspect para aplicar el aspecto a la función original.
-Por ejemplo, podemos crear un aspecto que registre todas las llamadas a los métodos set_x() y set_y() de la clase Point:
-import aspectlib
+### Aspecto de tiempo de ejecución (timing_aspect)
+El aspecto timing_aspect se encarga de medir el tiempo de ejecución de los métodos decorados. Esto se logra mediante el uso de un decorador de función.
 
 ```
-class Point:
-    def __init__(self, x=0, y=0):
-        self.x = x
-        self.y = y
+def timing_aspect(func):
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        execution_time = end_time - start_time
+        print(f"Tiempo de ejecución: {execution_time:.2f} segundos")
+        return result
 
-    def get_x(self):
-        return self.x
-
-    def get_y(self):
-        return self.y
-
-    @aspectlib.Aspect
-    def set_x(self, x):
-        print(f"Setting x to {x}")
-        yield aspectlib.Return(self.x)
-
-    @aspectlib.Aspect
-    def set_y(self, y):
-        print(f"Setting y to {y}")
-        yield aspectlib.Return(self.y)
+    return wrapper
 ```
+En este caso, el decorador timing_aspect toma una función (func) como argumento y devuelve una función envoltura (wrapper). La función envoltura se encarga de calcular el tiempo de ejecución antes y después de llamar a la función original (func).
 
-En este ejemplo, creamos dos aspectos utilizando el decorador @aspectlib.Aspect. El aspecto set_x se ejecutará antes o después de la función set_x() original, y registrará el valor que se está estableciendo. El aspecto set_y funciona de la misma manera para la función set_y().
-
-Podemos utilizar estas clases y aspectos de la siguiente manera:
+### Aspecto de división (division_aspect)
+El aspecto division_aspect se utiliza para manejar la excepción de división por cero y mostrar el resultado de la división. Al igual que el aspecto anterior, se implementa como un decorador de función.
 
 ```
-point = Point()
-point.set_x(10)
-point.set_y(20)
+def division_aspect(func):
+    def wrapper(*args, **kwargs):
+        try:
+            result = func(*args, **kwargs)
+            print(f"Resultado de la división: {result}")
+        except ZeroDivisionError:
+            print("¡Error: División por cero!")
+
+    return wrapper
+```
+En este caso, el decorador division_aspect captura la excepción ZeroDivisionError que puede ocurrir al realizar una división. Si no se produce ninguna excepción, se muestra el resultado de la división. Si se produce la excepción, se muestra un mensaje de error.
+
+### Uso de los aspectos
+Una vez definidos los aspectos, se pueden aplicar a los métodos de la clase Calculator mediante la notación @decorator.
 
 ```
+class Calculator:
+    @timing_aspect
+    def add(self, a, b):
+        return a + b
 
-Este código creará un objeto Point, establecerá la coordenada x en 10 y la coordenada y en 20. Cada vez que se llama a set_x() o set_y(), se imprimirá un mensaje que indica el valor que se está estableciendo.
-
-## Ejecutando el código
-Para ejecutar este código, primero debemos instalar la biblioteca AspectLib. Podemos hacerlo utilizando el siguiente comando:
+    @division_aspect
+    def divide(self, a, b):
+        return a / b
 ```
-pip install aspectlib
-```
-Luego, podemos ejecutar el archivo main.py que contiene el código de ejemplo:
-```
-python aspectos.py
-```
-Este archivo creará un objeto Point, establecerá las coordenadas x e y varias veces utilizando los métodos set_x() y set_y(), y mostrará los valores de las coordenadas utilizando los métodos get_x() y get_y().
 
-Cada vez que se establece una coordenada, se imprimirá un mensaje que indica el valor que se está estableciendo. Esto se debe a los aspectos que hemos definido en la clase Point.
+En este caso, el aspecto timing_aspect se aplica al método add, lo que significa que al llamar a calculator.add(2, 3), se medirá el tiempo de ejecución de la suma. El aspecto division_aspect se aplica al método divide, lo que significa que al llamar a calculator.divide(5, 0), se capturará la excepción de división por cero y se mostrará un mensaje de error.
 
-## Conclusiones
+## Aspectos en Python y diferencias con otros lenguajes
+A diferencia de otros lenguajes como Java y C#, Python no tiene una implementación nativa de aspectos. Sin embargo, se pueden utilizar técnicas como los decoradores de función y la envoltura de funciones para lograr un enfoque similar.
 
-Los aspectos son una técnica útil para separar las preocupaciones transversales de un programa en módulos separados y reutilizables. En este ejemplo, hemos utilizado la biblioteca AspectLib para aplicar aspectos en Python a los métodos de las clases Point y Line.
+Los decoradores de función en Python permiten modificar el comportamiento de una función sin modificar su implementación original. Esto es similar a cómo funcionan los aspectos en otros lenguajes, donde se puede agregar funcionalidad adicional a los métodos existentes.
 
-Estos aspectos nos permiten registrar las llamadas a los métodos set_x() y set_y() de la clase Point. De esta manera, podemos separar la funcionalidad de establecimiento de coordenadas de la clase Point de la funcionalidad de registro de llamadas.
+Una diferencia clave entre Python y otros lenguajes es que Python no tiene una sintaxis específica para definir aspectos. En cambio, se utilizan las capacidades flexibles de los decoradores de función y la envoltura de funciones para lograr el efecto deseado.
 
-En resumen, la utilización de aspectos nos permite tener un código más modular, fácil de entender y mantener, lo que es especialmente importante en proyectos de gran escala.
+El uso de aspectos en Python puede ofrecer ventajas como la separación de preocupaciones, el reuso de código y la capacidad de modificar el comportamiento de una clase sin tener que modificar su implementación original. Sin embargo, es importante tener en cuenta que el enfoque de aspectos en Python puede ser menos declarativo y más basado en técnicas de programación funcional.
 
+## Resumen
+En este ejemplo, se ha utilizado Python para implementar aspectos mediante el uso de decoradores de función y la envoltura de funciones. Se han creado dos aspectos: timing_aspect para medir el tiempo de ejecución y division_aspect para manejar la excepción de división por cero. Estos aspectos se han aplicado a los métodos add y divide de la clase Calculator respectivamente.
 
+Aunque Python no tiene una implementación nativa de aspectos, es posible utilizar las características de los decoradores de función para lograr un enfoque similar. Los aspectos en Python ofrecen la capacidad de modificar el comportamiento de una función o método sin tener que modificar su implementación original, lo que proporciona una separación de preocupaciones y facilita el reuso de código.
 
+Sin embargo, es importante tener en cuenta que el enfoque de aspectos en Python puede diferir de otros lenguajes, como Java o C#, en términos de sintaxis y enfoque. Python permite una mayor flexibilidad y enfoque funcional para implementar aspectos.
