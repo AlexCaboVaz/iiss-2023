@@ -1,25 +1,30 @@
 import asyncio
 
 async def revisar_coche(coche):
-    print(f"Revisando el coche {coche}")
+    print(f"Iniciando revisión del coche {coche}")
     await asyncio.sleep(3)
-    print(f"El coche {coche} ha sido revisado")
+    print(f"Revisión completada del coche {coche}")
+
+async def pintar_coche(coche):
+    print(f"Iniciando pintura del coche {coche}")
+    await asyncio.sleep(5)
+    print(f"Pintura completada del coche {coche}")
 
 async def vender_coche(coche):
-    print(f"Vendiendo el coche {coche}")
-    await asyncio.sleep(5)
-    print(f"El coche {coche} ha sido vendido")
+    print(f"Iniciando venta del coche {coche}")
+    await asyncio.sleep(2)
+    print(f"Venta completada del coche {coche}")
 
 async def main():
     coches = ["Toyota", "Ford", "Chevrolet", "BMW"]
     tareas = []
-    for coche in coches:
-        tarea1 = asyncio.create_task(revisar_coche(coche))
-        tarea2 = asyncio.create_task(vender_coche(coche))
-        tareas.append(tarea1)
-        tareas.append(tarea2)
 
-    # Esperar a que se completen todas las tareas
+    for coche in coches:
+        tarea_revisar = asyncio.create_task(revisar_coche(coche))
+        tarea_pintar = asyncio.create_task(pintar_coche(coche))
+        tarea_vender = asyncio.create_task(vender_coche(coche))
+        tareas.extend([tarea_revisar, tarea_pintar, tarea_vender])
+
     await asyncio.gather(*tareas)
 
 if __name__ == "__main__":

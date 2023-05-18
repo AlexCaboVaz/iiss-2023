@@ -1,29 +1,27 @@
-# Ejemplo de programación asíncrona en Python utilizando asyncio
-Este ejemplo muestra cómo utilizar la programación asíncrona en Python mediante la biblioteca asyncio para mejorar la eficiencia en la ejecución de un código que simula un concesionario de coches. El objetivo de utilizar la programación asíncrona es poder realizar varias tareas de forma simultánea y en paralelo.
+# Asincrona
 
-## Cómo funciona el código
-El archivo principal asyncio_coches.py contiene tres funciones principales:
+## Asyncio en Python: Ejemplo de Uso
+El código proporcionado muestra un ejemplo de uso de asyncio en Python para realizar operaciones asincrónicas. Vamos a analizar cómo funciona asyncio, qué son las funciones asíncronas en Python y un resumen del código.
 
-- revisar_coche(coche): esta función simula la tarea de revisión de un coche. Imprime un mensaje indicando que se está revisando el coche y espera 3 segundos simulados antes de imprimir un mensaje que indica que la tarea ha sido completada.
-- vender_coche(coche): esta función simula la tarea de venta de un coche. Imprime un mensaje indicando que se está vendiendo el coche y espera 5 segundos simulados antes de imprimir un mensaje que indica que la tarea ha sido completada.
-- main(): esta función crea una lista de coches y luego crea una tarea para revisar y vender cada uno de ellos utilizando la función asyncio.create_task(). Luego, espera a que se completen todas las tareas utilizando asyncio.gather().
+## Asyncio
+asyncio es un módulo de la biblioteca estándar de Python que proporciona una infraestructura para escribir código concurrente utilizando corutinas, multiplexación de E/S y otras herramientas relacionadas con la programación asíncrona. Permite ejecutar tareas de manera concurrente y asíncrona sin bloquear el hilo principal de ejecución.
 
-## Cómo se ha aplicado la programación asíncrona
+El núcleo de asyncio se basa en el modelo de programación de corutinas, que son funciones especiales que pueden suspender su ejecución y permitir que otras corutinas se ejecuten en el mismo bucle de eventos. asyncio proporciona las herramientas necesarias para definir, ejecutar y administrar estas corutinas de manera eficiente.
 
-En el código, se han utilizado las funciones async def para indicar que las funciones revisar_coche() y vender_coche() se ejecutan de forma asíncrona. De esta manera, cuando se llaman a estas funciones, no bloquean la ejecución del programa y permiten que otras tareas se ejecuten mientras se espera la finalización de la tarea actual.
+## Funciones asincrónicas en Python
+En Python, una función asincrónica se define utilizando la sintaxis async def. Estas funciones pueden contener palabras clave especiales como await, que indica que la ejecución de la función debe esperar a que se complete una operación asincrónica antes de continuar. Las funciones asincrónicas se pueden llamar y ejecutar de forma concurrente, permitiendo que otras tareas se ejecuten mientras se espera una operación asincrónica.
 
-Además, se han utilizado las funciones asyncio.create_task() y asyncio.gather() para crear tareas asíncronas y esperar a que se completen. En la función main(), se crea una tarea para cada coche utilizando asyncio.create_task(), lo que permite que todas las tareas se ejecuten en paralelo. Luego, se utiliza asyncio.gather() para esperar a que todas las tareas se completen antes de continuar con la ejecución del programa.
+Cuando se llama a una función asincrónica, esta devuelve un objeto coroutine que puede ejecutarse utilizando el bucle de eventos de asyncio. El bucle de eventos se encarga de ejecutar las corutinas de manera adecuada, gestionando su programación y coordinando su ejecución.
 
-## Ejemplo de uso en el código
-Aquí presentamos un ejemplo de cómo se utiliza la programación asíncrona en el código para revisar un coche:
+## Resumen del código
+El código proporcionado utiliza asyncio para realizar operaciones asincrónicas en un contexto de revisión, pintura y venta de coches. A continuación, un resumen del código:
 
-```
-async def revisar_coche(coche):
-    print(f"Revisando coche {coche['marca']} {coche['modelo']}")
-    await asyncio.sleep(3)
-    print(f"Revisión completada para coche {coche['marca']} {coche['modelo']}")
-```
-La palabra clave async indica que la función se ejecutará de forma asíncrona. El tiempo de espera await asyncio.sleep(3) permite que otras tareas se ejecuten durante este tiempo.
+- Se definen tres funciones asincrónicas: revisar_coche, pintar_coche y vender_coche. Cada una de ellas simula una operación relacionada con un coche y utiliza asyncio.sleep para introducir una pausa simulada.
+- La función main es la función principal que se ejecuta.
+- Se crea una lista de coches.
+- Se crean tareas asincrónicas utilizando asyncio.create_task para cada operación (revisar, pintar, vender) para cada coche en la lista.
+- Las tareas se agregan a la lista de tareas tareas utilizando extend.
+- Se utiliza asyncio.gather para esperar a que se completen todas las tareas. El operador de desempaquetado * se utiliza para pasar las tareas como argumentos a gather.
+- asyncio.run se utiliza para ejecutar la función main dentro del bucle de eventos de asyncio.
 
-## Conclusión
-En resumen, la programación asíncrona nos permite realizar varias tareas de forma simultánea y en paralelo, lo que puede mejorar el rendimiento y la eficiencia de nuestro código. En este ejemplo, hemos utilizado la biblioteca asyncio para simular la tarea de un concesionario de coches y hemos mostrado cómo utilizar las funciones async def, asyncio.create_task() y asyncio.gather() para implementar la programación asíncrona en Python.
+## ConclusionEn resumen, este código muestra cómo utilizar asyncio para ejecutar tareas asincrónicas en paralelo y esperar a que todas se completen. Cada tarea representa una operación de revisar, pintar y vender un coche, y se ejecutan de forma asincrónica utilizando funciones asincrónicas y asyncio.sleep
