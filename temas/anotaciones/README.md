@@ -1,137 +1,122 @@
-# Anotación en Typescript
+# Anotaciones en RUST
 
-## ¿Que es la anotacion?
+- En el lenguaje de programacion RUST las anotaciones son metadatos que se pueden agregar módulos del código para modificar su comportamiento o para interactuar con herramientas externas. Estas anotaciones como vemos en el código se especifican con el simbolo '#[]'.
 
-* La anotación es una técnica de programación que permite inyectar objetos dependientes en una clase sin tener que crearlos explícitamente en la clase que los necesita. Esto se logra utilizando una anotación que describe qué dependencias requiere una clase, y un contenedor de inyección de dependencias que se encarga de crear e inyectar las dependencias cuando se crea la instancia de la clase. En resumen, la anotación de dependencias ayuda a separar la lógica de la creación de objetos y la lógica de negocio en una aplicación.
+- En este ejercicio hemos usado la anotación personalizada para modificar el comportamiento de una estructura de datos, y esa anotación es nuestro macro personalizado.
 
-## Ejemplo: 
+## Definicion de la Anotación
 
-* Este archivo contiene una aplicación de ejemplo que utiliza decoradores en TypeScript para inyectar dependencias en una clase. La aplicación se compone de una clase App y una clase Logger.
+- En el archivo lib.rs de vehicle_info_macro, definimos una función de macro:
 
-* La clase Logger es una simple clase que tiene un método log() que toma una cadena y la imprime en la consola.
-
-~~~
-export class Logger {
-  log(message: string) {
-    console.log(message);
-  }
+´´´
+#[proc_macro]
+pub fn vehicle_info(_item: TokenStream) -> TokenStream {
+    // ... código del macro ...
 }
-~~~
+´´´
 
+- La anotación #[proc_macro] indica que la funcion a continuación, vehicle_info, se debe tratar como un macro procesador.
 
-* En primer lugar, se define un tipo genérico ClassType<T> que representa una clase con un constructor que puede tomar cualquier número de argumentos. Este tipo se utiliza más adelante en el decorador Inject.
+## Uso de la Anotación
 
-~~~
-type ClassType<T> = { new (...args: any[]): T };
-~~~
+- En main.rs aplicamos la anotacion (o macro) a una estructura
 
-
-* En este ejemplo, creamos una instancia de la clase Logger y la pasamos como argumento al constructor de la clase App. Luego, llamamos al método greet de la clase App, que a su vez llama al método log de la instancia de Logger que inyectamos previamente
-
-~~~
-import { Logger } from "./logger";
-
-class App {
-  logger: Logger;
-  constructor(logger: Logger) {
-    this.logger = logger;
-  }
-
-  greet() {
-    this.logger.log('Hola Mundo!!');
-  }
+´´´
+#[vehicle_info]
+struct Car {
+    brand: String,
+    model: String,
+    year: i32,
 }
+´´´
 
-const logger = new Logger();
-const app = new App(logger);
-app.greet(); // Output: "Hola Mundo!!"
-~~~
+- Aqui #[vehicle_info] es una anotación que aplica el macro que definimos anteriormente a la estructura Car.
 
+- Cuando el compilador de Rust ve esta anotación, llamara a nuestra funcion macro vehicle_info y le pasara la estructura Car (como un TokenStream). Nuestro macro procesara esta estructura y generara código adicional para ella (en este caso, una funcion).
 
-* Se utilizan dos decoradores para inyectar dependencias en la clase App. El primer decorador, InjectLogger, se encarga de inyectar una instancia de Logger en el constructor de la clase App. El segundo decorador, InjectMessage, se encarga de inyectar un mensaje en el método greet()
+## Resultado
 
-* Para inyectar la instancia de Logger utilizando decoradores, podemos utilizar el decorador @InjectLogger de la siguiente manera:
+- Como resultado de aplicar la anotación, la estructura Car, ahora tiene una función adicional llamada vehicle_info, que no se definio explicitamente en el código original pero fue generada por el macro. Esto se evidencia en el código principal:
 
-~~~
-function InjectLogger(target: any, propertyKey: string, index: number) {
-  target[propertyKey][index] = new Logger();
-}
-
-class App {
-  logger: Logger;
-  constructor(@InjectLogger logger: Logger) {
-    this.logger = logger;
-  }
-
-  greet() {
-    this.logger.log('Hola Mundo!!');
-  }
-}
-
-const app = new App();
-app.greet(); // Output: "Hola Mundo!!"
-
-~~~
-
-* En este caso, el decorador @InjectLogger se aplica a un parámetro del constructor de la clase App. El decorador reemplaza el valor del parámetro con una nueva instancia de Logger.
-
-* También podemos inyectar un mensaje personalizado en el método greet utilizando el decorador @InjectMessage de la siguiente manera:
-
-~~~
-function InjectMessage(message: string) {
-  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-    const originalMethod = descriptor.value;
-    descriptor.value = function (...args: any[]) {
-      console.log(message);
-      return originalMethod.apply(this, args);
+´´´
+fn main() {
+    let my_car = Car {
+        brand: "Toyota".to_string(),
+        model: "Corolla".to_string(),
+        year: 2020,
     };
-    return descriptor;
-  };
+    println!("{}", my_car.vehicle_info());
 }
+´´´
 
-class App {
-  logger: Logger;
-  constructor(logger: Logger) {
-    this.logger = logger;
-  }
+- Aquí, my_car.vehicle_info() es posible gracias a la anotación que aplicamos a Car.
 
-  @InjectMessage('Hola Mundo!!')
-  greet() {
-    this.logger.log('Logging from Logger instance injected by decorator!');
-  }
-}
+## Diferencias con Java
 
-const logger = new Logger();
-const app = new App(logger);
-app.greet(); // Output: "Hola Mundo!!", "Logging from Logger instance injected by decorator!"
-~~~
+- Las anotaciones en Rust como en Java cumplen el propósito general de proporcionar metadatos adicionales sobre el código, pero se utilizan de manera diferente y tienen capacidades distintas. Podemos ver estas difenrencias en el proposito, en el acceso a tiempo de ejecución, la sintaxis...
 
-* En este caso, el decorador @InjectMessage se aplica al método greet de la clase App. El decorador modifica el comportamiento del método, imprimiendo el mensaje personalizado antes de llamar al método original.
 
-* En este código hemos usado anotaciones para inyectar una dependencia (la clase Logger) y decorar un método (greet()) en la clase App. Al crear una instancia de la clase App, la anotación InjectLogger crea una instancia de Logger y la asigna a la propiedad correspondiente en la instancia de App. La anotación InjectMessage decora el método greet() para que imprima un mensaje personalizado antes de ejecutar el método original. De esta forma, las anotaciones nos permiten inyectar dependencias y decorar métodos de forma fácil y legible.
+## Explicación del código
 
-## Para ejecutar este código, es necesario tener instalado Node.js en el equipo.
+1. Macro vehicle_info_macro
+    - El archivo lib.rs en el directorio vehicle_info_macro contiene el código que define cómo funciona el macro vehicle_info.
 
-1. Abre un editor de código como Visual Studio Code.
-2. Crea un nuevo archivo y pega el código proporcionado en el archivo.
-3. Guarda el archivo con el nombre app.ts en una carpeta llamada src.
-4. Crea una nueva carpeta llamada dist.
-5. En la terminal, navega a la carpeta raíz del proyecto y ejecuta el siguiente comando para instalar las dependencias:
+    ´´´
+    extern crate proc_macro;
 
-~~~
-npm install typescript --save-dev
-~~~
+    use proc_macro::TokenStream;
+    use quote::quote;
+    use syn::{parse_macro_input, ItemStruct};
+    ´´´
+    - proc_macro: Es una biblioteca de Rust que proporciona funcionalidades para escribir macros personalizados
+    - quote: Es una biblioteca que proporciona una serie de utilidades para generar código Rust.
+    - syn: Es otra biblioteca que se utiliza para analizar código Rust en una forma que sea más fácil de manipular y entender.
 
-6. A continuación, ejecuta el siguiente comando para compilar el archivo TypeScript en JavaScript
+    ´´´
+    #[proc_macro]
+    pub fn vehicle_info(_item: TokenStream) -> TokenStream {
+    // ... código del macro ...
+    }
 
-~~~
-npx tsc --outDir dist src/app.ts
-~~~
+    ´´´
 
-7. Por último, ejecuta el siguiente comando para ejecutar el archivo JavaScript generado:
+    - #[proc_macro] indica que estamos definiendo un macro procesador, que toma un TokenStream (representa un fragmento de código) y produce otro TokenStream.
+    - La función vehicle_info es el corazón de nuestro macro. Esta función toma un fragmento de código, lo manipula, y produce un nuevo fragmento de código.
 
-~~~
-node dist/app.js
-~~~
 
-8. Verás que la consola muestra el mensaje "Hola Mundo!!", lo que indica que el código se ha ejecutado correctamente.
+    - Dentro de la función vehicle_info, analizamos el TokenStream entrante y generamos un nuevo fragmento de código que define la función vehicle_info para la estructura.
+
+
+2. Usando el Macro vehicle_info en main.rs:
+    ´´´
+    use vehicle_info_macro::vehicle_info;
+    ´´´´
+
+    - Esto nos permite usar el macro vehicle_info en nuestro archivo principal.
+
+    ´´´
+    #[vehicle_info]
+    truct Car {
+    brand: String,
+    model: String,
+    year: i32,
+    }
+    ´´´
+
+    - Aquí definimos una estructura Car. La anotación #[vehicle_info] indica que queremos que el macro vehicle_info procese esta estructura. El macro generará automáticamente una función vehicle_info para esta estructura.
+
+    ´´´
+    fn main() {
+    let my_car = Car {
+        brand: "Toyota".to_string(),
+        model: "Corolla".to_string(),
+        year: 2020,
+    };
+    println!("{}", my_car.vehicle_info());
+    }
+    ´´´
+
+    - Aquí creamos una instancia de Car y luego llamamos a la función vehicle_info (que fue generada por el macro) para imprimir información sobre el coche.
+
+3. Resumen
+    - En resumen, lo que hicimos fue definir un macro que, cuando se aplica a una estructura, genera automáticamente una función para esa estructura. Luego usamos ese macro en nuestro programa principal para agregar una función a nuestra estructura Car.
