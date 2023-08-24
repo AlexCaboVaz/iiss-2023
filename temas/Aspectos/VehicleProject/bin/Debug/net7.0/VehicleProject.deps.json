@@ -1,0 +1,53 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v7.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v7.0": {
+      "VehicleProject/1.0.0": {
+        "dependencies": {
+          "PostSharp": "2023.0.7"
+        },
+        "runtime": {
+          "VehicleProject.dll": {}
+        }
+      },
+      "PostSharp/2023.0.7": {
+        "dependencies": {
+          "PostSharp.Redist": "2023.0.7"
+        }
+      },
+      "PostSharp.Redist/2023.0.7": {
+        "runtime": {
+          "lib/net7.0/PostSharp.dll": {
+            "assemblyVersion": "2023.0.7.0",
+            "fileVersion": "2023.0.7.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "VehicleProject/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "PostSharp/2023.0.7": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-f41AHFJNkE+N3cyElPDdV52T11FePSfWrIM3S2zOq2Cc0P/3X6r4tfkXNtCrC/IAkQBHtZHpmY6TM0fKCeL4Zg==",
+      "path": "postsharp/2023.0.7",
+      "hashPath": "postsharp.2023.0.7.nupkg.sha512"
+    },
+    "PostSharp.Redist/2023.0.7": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-+Po4JCg7Va/EWIgKezmXf/tnwMXAJO3pwo2lahAnMzgBJBoTdLvFhP3pZqjbU8D8hMHDgyWMTg4H7orZC05ZVw==",
+      "path": "postsharp.redist/2023.0.7",
+      "hashPath": "postsharp.redist.2023.0.7.nupkg.sha512"
+    }
+  }
+}

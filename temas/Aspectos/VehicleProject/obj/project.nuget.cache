@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "oabDaWZgb8QZ7U7VLwRn3ZOGj4kq7EwdZxrroMOOYj9StyDUCtajxK8Q3NFYnee0RVNt2Yi/+126hQGucIc83A==",
+  "success": true,
+  "projectFilePath": "c:\\Users\\aleja\\Downloads\\SEPTIEMBRE\\Aspectos\\VehicleProject\\VehicleProject.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\aleja\\.nuget\\packages\\postsharp\\2023.0.7\\postsharp.2023.0.7.nupkg.sha512",
+    "C:\\Users\\aleja\\.nuget\\packages\\postsharp.redist\\2023.0.7\\postsharp.redist.2023.0.7.nupkg.sha512"
+  ],
+  "logs": []
+}
