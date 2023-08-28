@@ -2,7 +2,7 @@
 
 - Nos encontramos con un programa que utiliza AOP, lo conocido por sus siglas en ingles como Programación orientada a Aspectos, en este caso en el lenguaje de C#
 
--La programación orientada a aspectos (AOP) en C# permite añadir funcionalidades como registros o seguridad de forma modular, sin tener que modificar el código existente. Se crean "Aspectos" que encapsulan estas funcionalidades adicionales y se inyectan en el código objetivo, ya sea en tiempo de compilación o en tiempo de ejecución. Herramientas como PostSharp facilitan este proceso. Este enfoque ayuda a mantener el código más limpio y fácil de gestionar.
+- La programación orientada a aspectos (AOP) en C# permite añadir funcionalidades como registros o seguridad de forma modular, sin tener que modificar el código existente. Se crean "Aspectos" que encapsulan estas funcionalidades adicionales y se inyectan en el código objetivo, ya sea en tiempo de compilación o en tiempo de ejecución. Herramientas como PostSharp facilitan este proceso. Este enfoque ayuda a mantener el código más limpio y fácil de gestionar.
 
 ## Código
 
