@@ -1,64 +1,97 @@
-## Cómo funciona el código
-El código utiliza la biblioteca RxPY para trabajar con flujos de eventos asíncronos. En este ejemplo, creamos una clase Coche que tiene un nombre y una función realizar_accion que simula una operación asíncrona realizada por el coche.
+# Observables en SWIFT
 
-Luego, creamos tres instancias de la clase Coche y las almacenamos en una lista coches. Después, definimos una fuente de eventos que emite una acción cada segundo utilizando el operador interval de RxPY.
+## Como funciona el Patron observador en Swift
 
-Utilizamos operadores de RxPY para filtrar y transformar estos eventos en un stream para cada coche, y luego fusionamos todos los streams en uno solo utilizando el operador merge.
+- Tenemos principalmente dos tipos de objetos
+    1. Observales: Objetos que otros pueden "observar" para recibir actualizaciones
+    2. Observadores: Objetos que "observan" a los Observables y reciben notificaciones de cambios.
 
-Finalmente, nos suscribimos a este stream resultante con una función lambda que imprime un mensaje cada vez que se completa una acción. Para asegurarnos de que se completen todas las acciones, esperamos a que se completen todas las acciones antes de terminar el programa utilizando asyncio.gather.
+### Funcionamiento
+- Agregar Observadores: El objeto observable mantiene una lista de todos los Observaodres que están interesados en recibir notificaciones.
+- Notificación: Cuando algo relevante sucede en el objeto Observable, notifica a todos los Observadores registrados. Usualmente, esto se hace llamando un método especifico del Observador que en este caso es "update(_ message: String)".
+- Eliminar Observadores: También puedes eliminar Observadores si ya no quieres que reciban actualizaciones.
+
+
+### Resumen
+
+- En resumen, el patrón Observador en Swift permite que un objeto notifique a múltiples objetos sobre cambios en su estado sin tener que conocer los detalles de quiénes son esos objetos. Es especialmente útil para desacoplar clases y hacer que el sistema sea más modular y fácil de extender.
+
+
+## Código
+### Definimos los protocolos y clases
+
+1. Protocol Observer: Define un contrato para cualquier objeto que desee ser informado de los cambios en "Observable". Cualquier observador debe implementar la funcion "update (_ message: String).
 
 ```
-import asyncio
-import rx
-from rx import operators as ops
+protocol Observer {
+    func update(_ message: String)
+}
 
-class Coche:
-    def __init__(self, nombre):
-        self.nombre = nombre
-    
-    async def realizar_accion(self):
-        await asyncio.sleep(1)  # Simular una acción asíncrona
-        print(f"{self.nombre} ha realizado una acción")
-
-coches = [Coche("Coche 1"), Coche("Coche 2"), Coche("Coche 3")]
-
-fuente = rx.interval(1)  # Emite un evento cada segundo
-
-stream_coches = (
-    fuente
-    .pipe(
-        ops.zip(coches),
-        ops.map(lambda tupla: tupla[1].realizar_accion())
-    )
-    .pipe(ops.merge_all())
-)
-
-stream_coches.subscribe(lambda _: print("Se ha completado una acción"))
-
-asyncio.run(asyncio.gather(stream_coches.to_future()))
 ```
 
-## ¿Qué es ReactiveX?
-- Biblioteca de programación reactiva.
-- Permite trabajar con flujos de datos asíncronos.
-- Utiliza una sintaxis funcional y declarativa.
-## ¿Cómo funciona ReactiveX en Python?
-- mplementación de ReactiveX en Python se llama RxPY.
-- Permite trabajar con flujos de eventos utilizando una sintaxis similar a la de ReactiveX en otros lenguajes.
-1. Conceptos clave:
-    - Observable: Representa un flujo de eventos que se puede observar y transformar utilizando operadores.
-    - Operadores: Funciones que transforman los flujos de eventos.
-    - Subscriber: Es quien observa el flujo de eventos y ejecuta acciones en respuesta a ellos.
-    - Schedulers: Permite controlar el flujo y la ejecución de eventos.
-2. Programación reactiva con RxPY:
-    - Crear un flujo de eventos utilizando la clase Observable.
-    - Utilizar operadores para transformar y filtrar el flujo de eventos.
-    - Suscribirse al flujo de eventos utilizando un Subscriber.
-## ¿Qué operadores ofrece RxPY?
-- map: Transforma cada evento del flujo utilizando una función.
-- filter: Filtra los eventos del flujo según una condición.
-- reduce: Reduce el flujo de eventos a un solo valor utilizando una función de reducción.
-- merge: Combina varios flujos de eventos en uno solo.
-- zip: Combina dos flujos de eventos en uno solo, emitiendo eventos en pares.
+2. Clase Observable: Esta clase mantiene una lista de observadores y proporciona métodos para agregar, eliminar y notificar los observadores.
+    - observers: Un arreglo que contiene todos los objetos que implementan el protocolo observer.
+    - addObserver(): Agrega un nuevo observador al arreglo
+    - removeObserver(): Elimina un observador del arreglo
+    - notifyObservers(): Notifica todos los observadores cuando hay un cambio.
 
-En resumen, ReactiveX en Python (RxPY) es una biblioteca de programación reactiva que permite trabajar con flujos de eventos asíncronos utilizando una sintaxis funcional y declarativa. Permite transformar y filtrar estos flujos de manera sencilla y eficiente utilizando una gran cantidad de operadores, y permite suscribirse a estos flujos utilizando un Subscriber para procesar cada evento del flujo.
+```
+class Observable {
+    private var observers: [Observer] = []
+    // ...
+}
+
+```
+
+### Implementación de observadores:
+
+1. ConcreteObserver: Esta clase implementa el protocolo "Observer". Especificamente, implementa el método "update(_ message: String)", que simplemente imprime un mensaje en la consola.
+
+```
+class ConcreteObserver: Observer {
+    private let name: String
+    // ...
+}
+```
+
+### Uso del Patrón Observer
+
+1. Creacion de Observables y Observadores: Crea una instancia de "Observable y dos intancias de "ConcreteObserver"
+
+```
+let observable = Observable()
+let observer1 = ConcreteObserver(name: "Observer 1")
+let observer2 = ConcreteObserver(name: "Observer 2")
+```
+
+2. Agrega Observadores: Agrega las instancias de ConcreteObserver al objeto Observable
+
+```
+observable.addObserver(observer1)
+observable.addObserver(observer2)
+
+```
+
+3. Notificar Observadores: Envia un mensaje ("!Hola!") a todos los observadores
+
+```
+observable.addObserver(observer1)
+observable.addObserver(observer2)
+
+```
+
+4. Eliminar Observadores: Elimina el Observer1
+
+```
+observable.removeObserver(observer1)
+
+```
+
+5. Nueva notificación: Envía un nuevo mensaje ("!Adios!") a los observadores restantes.
+
+```
+observable.notifyObservers("¡Adiós!")
+
+```
+
+
