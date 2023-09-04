@@ -1,97 +1,119 @@
-# Ejemplo de inyección de dependencias en C#
+# Inyección de dependencias en Swift
 
-## Descripción
-* Este ejemplo muestra cómo implementar la inyección de dependencias en una aplicación de consola simple en C#. Se utilizó el framework .NET Core 3.1 para este ejemplo
+- Este proyecto demuestra cómo implementar la inyección de dependencias en Swift. La aplicación es una simple aplicación de notas que permite crear, leer y eliminar notas.
 
-## Qué es la Inyección de Dependencias?
-* La inyección de dependencias es un patrón de diseño que se utiliza para desacoplar los componentes de una aplicación. En lugar de crear explícitamente cada objeto que necesita una clase, la clase solicita el objeto a través de la D
+- La inyección de dependencias es un patrón de diseño que facilita la modularidad y pruebas en tu código
 
-## Como usar la Inyección de Dependencias en una aplicación C#
-* En este ejemplo, tenemos una interfaz ISaludoService que define un método Saludar y una implementación SaludoService que implementa la interfaz ISaludoService y devuelve un saludo con el nombre dado.
+##  Métodos Comunes
 
-~~~
-public interface ISaludoService
-{
-    string Saludar(string nombre);
+- Constructor: Inyectar a través del inicializador.
+
+- Propiedades: Inyectar después de la creación de instancia.
+
+## ¿Por qué es Útil?
+
+- Facilita las Pruebas Unitarias.
+
+- Mejora la Reutilización del Código.
+
+- Aumenta la Modularidad.
+
+## Como funciona la ineyccion de dependencias
+
+### Protocolos y clases concretas
+
+- NotesDatabase: un protocolo que define las operaciones de base de datos como create, read y delete.
+
+- InMemoryNotesDatabase: una implementación en memoria del protocolo NotesDatabase.
+
+### Inyección
+
+1. NotesManager: tiene una dependencia en NotesDatabase. Esta dependencia se inyecta a través del constructor (inicializador).
+
+```
+
+init(database: NotesDatabase) {
+    self.database = database
 }
 
-public class SaludoService : ISaludoService
-{
-    public string Saludar(string nombre)
-    {
-        return $"Hola, {nombre}!";
-    }
+
+```
+
+2. MainApp: tiene una dependencia en NotesManager. Esta dependencia también se inyecta a través del constructor.
+
+```
+init(notesManager: NotesManager) {
+    self.notesManager = notesManager
 }
-~~~
-
-* Luego, tenemos una clase App que tiene una dependencia de ISaludoService. En lugar de crear explícitamente una instancia de SaludoService dentro de App, pasamos una instancia de ISaludoService como argumento al constructor de App.
-
-~~~
-public class App
-{
-    private readonly ISaludoService _saludoService;
-
-    public App(ISaludoService saludoService)
-    {
-        _saludoService = saludoService;
-    }
-
-    public void Run()
-    {
-        Console.WriteLine(_saludoService.Saludar("Juan"));
-    }
-}
-~~~
-
-* En la configuración del contenedor de servicios, registramos la implementación SaludoService para el tipo ISaludoService utilizando el método AddSingleton. Esto significa que cada vez que se solicite una instancia de ISaludoService, el contenedor de servicios devolverá la misma instancia de SaludoService.
-
-~~~
-var services = new ServiceCollection();
-services.AddSingleton<ISaludoService, SaludoService>();
-~~~
-
-* Luego, registramos App como un tipo transitorio utilizando el método AddTransient. Esto significa que cada vez que se solicite una instancia de App, el contenedor de servicios creará una nueva instancia de App y pasará una instancia de ISaludoService como argumento al constructor de App.
-
-~~~
-services.AddTransient<App>();
-~~~
-
-* Finalmente, en el método Main, utilizamos el contenedor de servicios para obtener una instancia de App y ejecutar su método Run. Esto significa que la instancia de App que se ejecuta tiene una dependencia inyectada de ISaludoService.
-
-~~~
-var serviceProvider = services.BuildServiceProvider();
-var app = serviceProvider.GetService<App>();
-app.Run();
-~~~
 
 
+```
 
-## Cómo instalar y ejecutar el ejemplo en Visual Studio Code
-* Abre Visual Studio Code y crea un nuevo archivo con la extensión .cs.
+### Flujo del programa
 
-* Copia el código del ejemplo en el archivo.
+1. Se crea una instancia de InMemoryNotesDatabase y se inyecta en NotesManager.
 
-* Abre la terminal en Visual Studio Code.
+```
 
-* Instala el SDK de .NET Core si aún no lo has hecho (puedes descargarlo desde la página oficial de .NET):
+let database: NotesDatabase = InMemoryNotesDatabase()
+let notesManager = NotesManager(database: database)
 
-~~~
-dotnet --version
-~~~
-* En la terminal, navega al directorio donde se encuentra el archivo que acabas de crear:
 
-~~~
-cd <directorio>
-~~~
+```
 
-* Compila y ejecuta el archivo con el comando:
+2. Se crea una instancia de NotesManager y se inyecta en MainApp.
 
-~~~
-dotnet run
-~~~
+```
+let mainApp = MainApp(notesManager: notesManager)
 
-* Deberías ver la salida de la aplicación en la terminal:
+```
 
-~~~
-Hola, Juan!
-~~~~
+3. MainApp ahora puede utilizar NotesManager para manejar notas, sabiendo que está respaldado por una implementación en memoria de NotesDatabase.
+swift
+
+
+```
+mainApp.run()
+
+
+```
+
+4. Se muestra la lista de todas las notas, y luego se actualiza al eliminar una nota.
+
+
+### Ventajas
+
+- Facilita las pruebas unitarias al permitir la sustitución de implementaciones reales con mockups.
+
+- Aumenta la modularidad y reutilización del código.
+
+### Ejecución
+
+1. Compilar: swift build
+
+2. Ejecutar: swift run
+
+
+## Swift vs Java
+
+### Swift
+
+- Incorporado en el Lenguaje: No requiere bibliotecas adicionales para inyección simple.
+
+- Constructor: Uso común del inicializador para inyectar dependencias.
+
+- Explicito: Generalmente, la inyección de dependencias se maneja en el código, sin necesidad de archivos de configuración.
+
+### Java
+
+- Frameworks: Ampliamente utilizado con frameworks como Spring para gestionar inyecciones.
+
+- Anotaciones: Usa anotaciones como @Autowired para inyectar dependencias automáticamente.
+
+- Configuración Externa: A menudo permite la configuración externa a través de archivos XML o anotaciones.
+
+### Diferencias claves
+
+- Swift tiende a ser más manual y explícito, mientras que Java ofrece enfoques más automatizados mediante frameworks.
+
+- Java permite más flexibilidad en la configuración externa, mientras que Swift se centra más en la configuración dentro del código.
