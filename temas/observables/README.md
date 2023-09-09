@@ -1,97 +1,138 @@
-# Observables en SWIFT
+# OBSERVABLES EN KOTLIN
 
-## Como funciona el Patron observador en Swift
+- Este proyecto de ejemplo utiliza RxJava 3 para demostrar conceptos avanzados de programación reactiva en Kotlin. El programa crea varios Observables y un Single, además de un PublishSubject para emitir eventos. Todos estos elementos se combinan y se manipulan utilizando varios operadores de RxJava para lograr diferentes resultados.
 
-- Tenemos principalmente dos tipos de objetos
-    1. Observales: Objetos que otros pueden "observar" para recibir actualizaciones
-    2. Observadores: Objetos que "observan" a los Observables y reciben notificaciones de cambios.
+## RCJAVA en Kotlin
 
-### Funcionamiento
-- Agregar Observadores: El objeto observable mantiene una lista de todos los Observaodres que están interesados en recibir notificaciones.
-- Notificación: Cuando algo relevante sucede en el objeto Observable, notifica a todos los Observadores registrados. Usualmente, esto se hace llamando un método especifico del Observador que en este caso es "update(_ message: String)".
-- Eliminar Observadores: También puedes eliminar Observadores si ya no quieres que reciban actualizaciones.
+1. Crear Observables: Usar Observable.just() o list.toObservable() para crear.
+2. Operadores: Modificar datos con map, filter, etc.
+3. Suscribirse: Usar subscribe() para recibir elementos.
+4. Desuscribirse: Llamar a dispose() para detener la suscripción.
+5. RxKotlin añade funciones de extensión y simplifica el código. Funciona bien con las características modernas de Kotlin como lambdas y corrutinas.
 
+## Componentes y código
 
-### Resumen
+### Observables
 
-- En resumen, el patrón Observador en Swift permite que un objeto notifique a múltiples objetos sobre cambios en su estado sin tener que conocer los detalles de quiénes son esos objetos. Es especialmente útil para desacoplar clases y hacer que el sistema sea más modular y fácil de extender.
+- observable1
 
+    1. Descripción: Este Observable emite números del 1 al 5.
+    ```
 
-## Código
-### Definimos los protocolos y clases
+    val observable1 = Observable.interval(1, TimeUnit.SECONDS)
+    .take(5)
+    .map { it + 1 }
 
-1. Protocol Observer: Define un contrato para cualquier objeto que desee ser informado de los cambios en "Observable". Cualquier observador debe implementar la funcion "update (_ message: String).
+    ```
 
-```
-protocol Observer {
-    func update(_ message: String)
-}
+    2. Subscripciones: Imprime cada número emitido y notifica cuando se completa.
+    ```
+    observable1.subscribe(
+    { value -> println("observable1 onNext: $value") },
+    { error -> println("observable1 onError: $error") },
+    { println("observable1 onComplete") }
+    )
 
-```
+    ```
 
-2. Clase Observable: Esta clase mantiene una lista de observadores y proporciona métodos para agregar, eliminar y notificar los observadores.
-    - observers: Un arreglo que contiene todos los objetos que implementan el protocolo observer.
-    - addObserver(): Agrega un nuevo observador al arreglo
-    - removeObserver(): Elimina un observador del arreglo
-    - notifyObservers(): Notifica todos los observadores cuando hay un cambio.
+- observable2
 
-```
-class Observable {
-    private var observers: [Observer] = []
-    // ...
-}
+    1. Descripción: Este Observable toma eventos de un PublishSubject y los convierte a mayúsculas.
+    ```
+    val subject = PublishSubject.create<String>()
+    val observable2 = subject.map { it.toUpperCase(Locale.getDefault()) }
 
-```
+    ```
 
-### Implementación de observadores:
+    2. Subscripciones: Imprime cada cadena en mayúsculas y notifica errores si los hay.
+    ```
 
-1. ConcreteObserver: Esta clase implementa el protocolo "Observer". Especificamente, implementa el método "update(_ message: String)", que simplemente imprime un mensaje en la consola.
+    observable2.subscribe(
+    { value -> println("observable2 onNext: $value") },
+    { error -> println("observable2 onError: $error") }
+    )
 
-```
-class ConcreteObserver: Observer {
-    private let name: String
-    // ...
-}
-```
+    ```
 
-### Uso del Patrón Observer
+## Subject
 
-1. Creacion de Observables y Observadores: Crea una instancia de "Observable y dos intancias de "ConcreteObserver"
-
-```
-let observable = Observable()
-let observer1 = ConcreteObserver(name: "Observer 1")
-let observer2 = ConcreteObserver(name: "Observer 2")
-```
-
-2. Agrega Observadores: Agrega las instancias de ConcreteObserver al objeto Observable
+- Tipo: PublishSubject<String>
 
 ```
-observable.addObserver(observer1)
-observable.addObserver(observer2)
+subject.onNext("hola")
+subject.onNext("mundo")
+
 
 ```
 
-3. Notificar Observadores: Envia un mensaje ("!Hola!") a todos los observadores
+## Single
+
+- zippedSingle
+
+    1. Descripción: Este Single se forma mediante la combinación del último elemento emitido por observable1 y el primer elemento emitido por observable2.
+
+    ```
+
+    val zippedSingle = Single.zip(
+    observable1.lastOrError(),
+    observable2.firstOrError(),
+    BiFunction<Long, String, String> { num, str -> "Last of observable1: $num, First of observable2: $str" }
+    )
+
+    
+    ```
+
+    2. Subscripciones: Imprime la combinación de los elementos y notifica errores si los hay
+
+    ```
+
+    zippedSingle.subscribe(
+    { value -> println("zippedSingle onSuccess: $value") },
+    { error -> println("zippedSingle onError: $error") }
+    )
+
+    
+    ```
+
+## Gestión de recursos
+
+- Para liberar recursos se usa CompositeDisposable.
 
 ```
-observable.addObserver(observer1)
-observable.addObserver(observer2)
+
+val disposables = CompositeDisposable()
+
+disposables.addAll(
+    observable1.subscribe(/*...*/),
+    observable2.subscribe(/*...*/),
+    zippedSingle.subscribe(/*...*/)
+)
+
+// Al final del ciclo de vida
+disposables.dispose()
 
 ```
 
-4. Eliminar Observadores: Elimina el Observer1
+## Flujo de Ejecución
 
-```
-observable.removeObserver(observer1)
-
-```
-
-5. Nueva notificación: Envía un nuevo mensaje ("!Adios!") a los observadores restantes.
-
-```
-observable.notifyObservers("¡Adiós!")
-
-```
+1. Se inician las subscripciones a observable1, observable2, y zippedSingle.
+2. El PublishSubject emite las cadenas "hola" y "mundo".
+3. observable1 emite números del 1 al 5 cada segundo.
+4. zippedSingle combina el último número emitido por observable1 y la primera cadena emitida por observable2.
+5. CompositeDisposable se utiliza para liberar todos los recursos.
 
 
+## Diferencias con Java
+
+1. Sintaxis: Kotlin es más conciso, lo que facilita la lectura y escritura del código relacionado con Observables.
+
+2. Extensiones: Kotlin permite funciones de extensión, como en RxKotlin, que hacen más fácil trabajar con Observables.
+
+3. Seguridad de Tipos Nulos: Kotlin maneja nulos de manera más segura, lo que puede afectar al manejo de errores en Observables.
+
+- En resumen, el concepto de "Observable" es el mismo en Java y Kotlin, pero las diferencias en sintaxis y características del lenguaje hacen que la experiencia de trabajar con ellos sea ligeramente diferente.
+
+
+## Ejecución
+
+- Ejecuta gradle run o ./gradlew run si estás utilizando Gradle.
