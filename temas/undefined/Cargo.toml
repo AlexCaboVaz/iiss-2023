@@ -1,0 +1,8 @@
+
+[package]
+name = "undefined" # Nombre del paquete/proyecto. Puedes cambiarlo si deseas.
+version = "0.1.0" # La versión de tu paquete.
+edition = "2018" # Especifica la edición de Rust que estás utilizando.
+
+# Las dependencias de tu proyecto estarían listadas aquí. Como no has mencionado ninguna, no se incluirán por ahora.
+[dependencies]
