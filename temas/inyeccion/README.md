@@ -1,119 +1,111 @@
-# Inyección de dependencias en Swift
+# Inyección de Dependencias en Ruby con Dry::Container
 
-- Este proyecto demuestra cómo implementar la inyección de dependencias en Swift. La aplicación es una simple aplicación de notas que permite crear, leer y eliminar notas.
+- Este documento describe cómo implementar la inyección de dependencias en Ruby utilizando la gema Dry::Container. La inyección de dependencias es un patrón de diseño utilizado en programación para aumentar la eficiencia y modularidad del código.
 
-- La inyección de dependencias es un patrón de diseño que facilita la modularidad y pruebas en tu código
+- Dry::Container es una biblioteca en Ruby para gestionar dependencias. Permite registrar recursos con claves únicas y luego resolverlos cuando se necesiten. Se puede usar junto con dry-auto_inject para la inyección automática de dependencias, haciendo el código más modular y fácil de gestionar.
 
-##  Métodos Comunes
+## Requerimientos
 
-- Constructor: Inyectar a través del inicializador.
+- Ruby
+- Gema dry-container
+- Gema dry-auto_inject
 
-- Propiedades: Inyectar después de la creación de instancia.
+## Código
 
-## ¿Por qué es Útil?
+### Configuración del contenedor - MyContainer
 
-- Facilita las Pruebas Unitarias.
-
-- Mejora la Reutilización del Código.
-
-- Aumenta la Modularidad.
-
-## Como funciona la ineyccion de dependencias
-
-### Protocolos y clases concretas
-
-- NotesDatabase: un protocolo que define las operaciones de base de datos como create, read y delete.
-
-- InMemoryNotesDatabase: una implementación en memoria del protocolo NotesDatabase.
-
-### Inyección
-
-1. NotesManager: tiene una dependencia en NotesDatabase. Esta dependencia se inyecta a través del constructor (inicializador).
+- Primero, definimos una clase llamada MyContainer que se extiende con Dry::Container::Mixin. Este mixin nos proporciona métodos para registrar y resolver dependencias.
 
 ```
 
-init(database: NotesDatabase) {
-    self.database = database
-}
+class MyContainer
+  extend Dry::Container::Mixin
+
+  register('employee_database') { EmployeeDatabase.new }
+  register('employee_manager') { EmployeeManager.new(MyContainer['employee_database']) }
+end
 
 
 ```
 
-2. MainApp: tiene una dependencia en NotesManager. Esta dependencia también se inyecta a través del constructor.
+- Aquí registramos dos dependencias: employee_database y employee_manager. Note que employee_manager depende de employee_database.
+
+### Implementación de clases - EmployeeDatabase y EmployeeManager
+
+- EmployeeDatabase es una clase simple que mantiene un hash de empleados.
+- EmployeeManager es otra clase que depende de EmployeeDatabase.
 
 ```
-init(notesManager: NotesManager) {
-    self.notesManager = notesManager
-}
+class EmployeeDatabase
+  # ...
+end
 
-
-```
-
-### Flujo del programa
-
-1. Se crea una instancia de InMemoryNotesDatabase y se inyecta en NotesManager.
-
-```
-
-let database: NotesDatabase = InMemoryNotesDatabase()
-let notesManager = NotesManager(database: database)
-
-
-```
-
-2. Se crea una instancia de NotesManager y se inyecta en MainApp.
-
-```
-let mainApp = MainApp(notesManager: notesManager)
+class EmployeeManager
+  def initialize(employee_database)
+    @employee_database = employee_database
+  end
+  # ...
+end
 
 ```
 
-3. MainApp ahora puede utilizar NotesManager para manejar notas, sabiendo que está respaldado por una implementación en memoria de NotesDatabase.
-swift
+### Auto-inyección - MyInject
 
+- Creamos un módulo MyInject que nos ayudará a inyectar automáticamente dependencias en nuestras clases.
 
 ```
-mainApp.run()
+MyInject = Dry::AutoInject(MyContainer)
 
 
 ```
 
-4. Se muestra la lista de todas las notas, y luego se actualiza al eliminar una nota.
+
+### Clase principal - MyApp
+
+- La clase MyApp incluye el módulo MyInject para inyectar la dependencia de employee_manager automáticamente.
+
+```
+class MyApp
+  include MyInject['employee_manager']
+  # ...
+end
 
 
-### Ventajas
+```
 
-- Facilita las pruebas unitarias al permitir la sustitución de implementaciones reales con mockups.
+### Inicialización y ejecución
 
-- Aumenta la modularidad y reutilización del código.
+- Finalmente, creamos una instancia de MyApp y llamamos al método call.
 
-### Ejecución
+```
 
-1. Compilar: swift build
+app = MyApp.new(employee_manager: MyContainer['employee_manager'])
+app.call
 
-2. Ejecutar: swift run
 
+```
 
-## Swift vs Java
+### Cómo funciona la Inyección de Dependencias
 
-### Swift
+1. MyContainer registra todas las dependencias necesarias.
+2. EmployeeManager se configura para recibir una instancia de EmployeeDatabase.
+3. MyApp se configura para recibir una instancia de EmployeeManager.
+4. Al inicializar MyApp, se resuelven todas las dependencias automáticamente.
 
-- Incorporado en el Lenguaje: No requiere bibliotecas adicionales para inyección simple.
+## Diferencia con Java
 
-- Constructor: Uso común del inicializador para inyectar dependencias.
+- Ruby:
 
-- Explicito: Generalmente, la inyección de dependencias se maneja en el código, sin necesidad de archivos de configuración.
+    1. Herramienta: Dry::Container
+    2. Estilo: Fluida, sencilla
+    3. Práctica: Registro directo de dependencias
+    4. Filosofía: Convención sobre configuración
 
-### Java
+- Java:
 
-- Frameworks: Ampliamente utilizado con frameworks como Spring para gestionar inyecciones.
+    1. Herramienta: Spring
+    2. Estilo: Formal, robusta
+    3. Práctica: Anotaciones para inyección
+    4. Filosofía: Configuración explícita
 
-- Anotaciones: Usa anotaciones como @Autowired para inyectar dependencias automáticamente.
-
-- Configuración Externa: A menudo permite la configuración externa a través de archivos XML o anotaciones.
-
-### Diferencias claves
-
-- Swift tiende a ser más manual y explícito, mientras que Java ofrece enfoques más automatizados mediante frameworks.
-
-- Java permite más flexibilidad en la configuración externa, mientras que Swift se centra más en la configuración dentro del código.
+- Ambos buscan modularidad y desacoplamiento, pero con enfoques distintos.
