@@ -4,9 +4,10 @@
 
 1. [Introducción](#-introducción)
 2. [Cómo Funciona el Código](#-cómo-funciona-el-código)
-3. [Delegación en C#](#-delegación-en-c)
-4. [Diferencias con Java](#-diferencias-con-java)
-5. [Requisitos y Ejecución](#-requisitos-y-ejecución)
+3. [Refractoring](#Refactorización)
+4. [Delegación en C#](#-delegación-en-c)
+5. [Diferencias con Java](#-diferencias-con-java)
+6. [Requisitos y Ejecución](#-requisitos-y-ejecución)
 
 ---
 
