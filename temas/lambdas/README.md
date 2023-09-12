@@ -1,129 +1,84 @@
-# Lambdas en Kotlin
+# 🧑‍💼 Gestión de Personas en Kotlin 🧑‍💼
 
+---
 
-- En Kotlin, las lambdas son funciones anónimas que puedes usar para pasar código como argumento a funciones de orden superior. Utilizan una sintaxis concisa y permiten operaciones como filtrar, mapear y reducir en colecciones. También soportan la captura y modificación de variables externas y utilizan it para referirse a un único parámetro no declarado.
+## 📌 Índice 📌
 
-## Código
+1. [📚 Descripción General](#descripción-general)
+2. [🔍 Cómo Funciona](#cómo-funciona)
+    - [📦 Clase y Propiedades](#clase-y-propiedades)
+    - [🔧 Métodos](#métodos)
+3. [🐑 Uso de Lambdas en Kotlin](#uso-de-lambdas-en-kotlin)
+4. [🔄 Técnicas de Refactorización](#técnicas-de-refactorización)
+5. [🏁 Cómo Ejecutar el Código](#cómo-ejecutar-el-código)
+6. [🛠 Requisitos](#requisitos)
 
-### Clase Person
+---
 
-- Primero, definimos una clase de datos llamada Person con tres propiedades: name, age y city. Esta clase se utilizará para crear una lista de objetos Person.
+## 📚 Descripción General 📚
 
-```
+Este proyecto en Kotlin demuestra la utilización de **funciones de orden superior**, **lambdas**, **colecciones** y **clases de datos** para manipular y procesar una lista de personas.
 
+---
+
+## 🔍 Cómo Funciona 🔍
+
+### 📦 Clase y Propiedades 📦
+
+```kotlin
 data class Person(val name: String, val age: Int, val city: String)
-
-
 ```
 
-### Lista de Objetos Person
+Esta clase define las propiedades básicas que tendrán todas las personas:
 
-- Creamos una lista de objetos Person que contiene cuatro personas con diferentes nombres, edades y ciudades.
+- name: El nombre de la persona (String).
+- age: La edad de la persona (Int).
+- city: La ciudad donde vive la persona (String).
 
+### 🔧 Métodos 🔧
+
+- validate(person: Person): Valida la información de una persona.
+- mostrarResultados(): Muestra múltiples resultados con etiquetas para fácil identificación.
+- filterOlderThan(): Filtra personas mayores que una cierta edad.
+- transformToNames(): Extrae solo los nombres de las personas.
+- groupPeopleByCity(): Agrupa las personas por su ciudad.
+- ... y más
+
+
+## 🐑 Uso de Lambdas en Kotlin 🐑
+
+Las lambdas son funciones anónimas que se pueden pasar como argumentos a funciones de orden superior. Ejemplo:
+
+```kotlin
+people.filter { it.age > age }
 ```
 
-val people = listOf(
-    Person("Alice", 29, "New York"),
-    Person("Bob", 22, "Boston"),
-    Person("Catherine", 31, "Chicago"),
-    Person("David", 45, "Denver")
-)
+Aquí, { it.age > age } es una lambda que se pasa a filter.
 
 
+## 🐑 Diferencias entre Lambdas en Kotlin y Java 🐑
+
+- Kotlin: Más conciso, permite referencias de funciones ::funcName
+- Java: Requiere una interfaz funcional para el tipo de lambda.
+
+## 🔄 Técnicas de Refactorización 🔄
+
+- Desacoplamiento: Cada operación específica se ha separado en su propia función.
+- Validación: Se ha añadido una función de validación para asegurarse de que los datos sean válidos antes de operar con ellos.
+- Función de Mostrar Resultados: Para hacer el código más reutilizable y limpio.
+
+## 🏁 Cómo Ejecutar el Código 🏁
+
+1. Abre una terminal en tu editor de código.
+2. Navega hasta el directorio donde se encuentra el archivo Lambdas.kt.
+3. Ejecuta los siguientes comandos:
+
+```bash
+kotlinc Lambdas.kt -include-runtime -d Lambdas.jar
+java -jar Lambdas.jar
 ```
 
+## 🛠 Requisitos 🛠
 
-### Lambdas y sus funciones
-
-
-1. Filtrar todas las personas mayores de 30 años
-
-```
-
-val olderThan30 = people.filter { it.age > 30 }
-
-
-```
-
-- Usamos la función filter que acepta una lambda { it.age > 30 }. Aquí, it se refiere a cada objeto Person en la lista.
-
-
-2. Transformar la lista de personas a una lista de nombres
-
-```
-val names = people.map { it.name }
-
-```
-
-- Utilizamos map con una lambda { it.name } para transformar cada objeto Person en su propiedad name.
-
-
-3. Encontrar a la persona más joven
-
-```
-val youngest = people.minByOrNull { it.age }
-
-```
-
-- Usamos minByOrNull con una lambda { it.age } para encontrar el objeto Person con la menor edad.
-
-
-4. Agrupar personas por ciudad
-
-```
-val groupByCity = people.groupBy { it.city }
-
-```
-
-- Aquí, groupBy con la lambda { it.city } crea un mapa que agrupa los objetos Person por su propiedad city.
-
-
-5. Calcular la edad promedio de las personas
-
-```
-val averageAge = people.map { it.age }.average()
-
-```
-
-- Primero, usamos map para extraer todas las edades y luego average() para calcular la edad media.
-
-
-6. Ordenar personas por edad y luego por nombre
-
-```
-val sortedByAgeThenName = people.sortedWith(compareBy({ it.age }, { it.name }))
-
-```
-
-- sortedWith acepta un comparador, que en este caso se crea con compareBy y dos lambdas para ordenar primero por age y luego por name
-
-
-7. Verificar si todas las personas viven en la misma ciudad
-
-```
-val allInSameCity = people.all { it.city == people[0].city }
-
-```
-
-- all utiliza una lambda para comprobar si todos los objetos Person tienen la misma city
-
-
-8. Encontrar todas las ciudades únicas en las que viven las personas
-
-```
-val uniqueCities = people.map { it.city }.toSet()
-
-```
-
-- Utilizamos map para extraer las ciudades y luego toSet() para eliminar duplicados, obteniendo así las ciudades únicas.
-
-
-## Diferencia con Java
-
-- Sintaxis: Kotlin es más conciso; Java es más verboso.
-- Variables Capturadas: Kotlin permite modificarlas; Java no.
-- Tipado: Kotlin tiene mejor inferencia de tipos.
-- Funciones de Extensión: Disponibles en Kotlin, no en Java.
-- Funciones de Orden Superior: Más fáciles de usar en Kotlin.
-- It: Kotlin usa it para simplificar las lambdas de un solo parámetro; Java no tiene un equivalente.
-- En resumen, Kotlin ofrece una mayor flexibilidad y simplicidad cuando se trata de usar lambdas.
+- Kotlin SDK instalado.
+- IDE compatible con Kotlin, como IntelliJ IDEA o Visual Studio Code con la extensión de Kotlin.

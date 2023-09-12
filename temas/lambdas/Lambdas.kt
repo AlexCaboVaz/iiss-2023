@@ -1,4 +1,14 @@
+/**
+ * Clase para representar una persona con nombre, edad y ciudad.
+ */
 data class Person(val name: String, val age: Int, val city: String)
+
+/**
+ * Valida la información de una persona.
+ */
+fun validate(person: Person): Boolean {
+    return person.age >= 0 && person.name.isNotEmpty() && person.city.isNotEmpty()
+}
 
 fun main() {
     val people = listOf(
@@ -6,38 +16,57 @@ fun main() {
         Person("Bob", 22, "Boston"),
         Person("Catherine", 31, "Chicago"),
         Person("David", 45, "Denver")
+    ).filter(::validate)
+
+    mostrarResultados(
+        "Personas mayores de 30" to filterOlderThan(people, 30),
+        "Nombres de personas" to transformToNames(people),
+        "Personas agrupadas por ciudad" to groupPeopleByCity(people),
+        "Edad promedio" to calculateAverageAge(people),
+        "Ordenado por edad y luego por nombre" to sortPeopleByAgeAndName(people),
+        "¿Todos viven en la misma ciudad?" to checkIfAllInSameCity(people),
+        "Ciudades únicas" to findUniqueCities(people)
     )
-
-    // 1. Filtrar todas las personas que son mayores de 30 años
-    val olderThan30 = people.filter { it.age > 30 }
-    println("Personas mayores de 30: $olderThan30")
-
-    // 2. Transformar la lista de personas a una lista de nombres
-    val names = people.map { it.name }
-    println("Nombres de personas: $names")
-
-    // 3. Encontrar a la persona más joven y devolver su nombre y edad
-    val youngest = people.minByOrNull { it.age }
-    println("La persona más joven es: ${youngest?.name}, Edad: ${youngest?.age}")
-
-    // 4. Agrupar personas por ciudad
-    val groupByCity = people.groupBy { it.city }
-    println("Personas agrupadas por ciudad: $groupByCity")
-
-    // 5. Calcular la edad promedio de las personas
-    val averageAge = people.map { it.age }.average()
-    println("Edad promedio: $averageAge")
-
-    // 6. Ordenar personas por edad y luego por nombre
-    val sortedByAgeThenName = people.sortedWith(compareBy({ it.age }, { it.name }))
-    println("Ordenado por edad y luego por nombre: $sortedByAgeThenName")
-    
-    // 7. Verificar si todas las personas viven en la misma ciudad
-    val allInSameCity = people.all { it.city == people[0].city }
-    println("¿Todos viven en la misma ciudad? $allInSameCity")
-    
-    // 8. Encontrar todas las ciudades únicas en las que viven las personas
-    val uniqueCities = people.map { it.city }.toSet()
-    println("Ciudades únicas: $uniqueCities")
 }
 
+/**
+ * Muestra múltiples resultados con sus etiquetas correspondientes.
+ */
+fun mostrarResultados(vararg resultados: Pair<String, Any>) {
+    for ((etiqueta, resultado) in resultados) {
+        println("$etiqueta: $resultado")
+    }
+}
+
+fun filterOlderThan(people: List<Person>, age: Int): List<Person> {
+    return people.filter { it.age > age }
+}
+
+fun transformToNames(people: List<Person>): List<String> {
+    return people.map { it.name }
+}
+
+fun findYoungestPerson(people: List<Person>): Person? {
+    return people.minByOrNull { it.age }
+}
+
+fun groupPeopleByCity(people: List<Person>): Map<String, List<Person>> {
+    return people.groupBy { it.city }
+}
+
+fun calculateAverageAge(people: List<Person>): Double {
+    return people.map { it.age }.average()
+}
+
+fun sortPeopleByAgeAndName(people: List<Person>): List<Person> {
+    return people.sortedWith(compareBy({ it.age }, { it.name }))
+}
+
+fun checkIfAllInSameCity(people: List<Person>): Boolean {
+    val firstCity = people.firstOrNull()?.city ?: return false
+    return people.all { it.city == firstCity }
+}
+
+fun findUniqueCities(people: List<Person>): Set<String> {
+    return people.map { it.city }.toSet()
+}
