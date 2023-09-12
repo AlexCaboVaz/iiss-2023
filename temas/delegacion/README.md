@@ -22,7 +22,7 @@ Este proyecto de C# tiene como objetivo demostrar un diseño básico de la clase
 
 #### Código de ejemplo
 
-\`\`\` csharp
+``` csharp
 public class Coche
 {
     public string Marca { get; set; }
@@ -46,7 +46,7 @@ public class Coche
         VelocidadActual -= 10;
     }
 }
-\`\`\`
+```
 
 - 🏷️ **Propiedades**
   - `Marca`: La marca del coche (ej. "Toyota").
@@ -61,7 +61,7 @@ public class Coche
 
 #### Código de ejemplo
 
-\`\`\` csharp
+``` csharp
 public class Program
 {
     public static void Main(string[] args)
@@ -73,7 +73,7 @@ public class Program
         Console.WriteLine("Velocidad actual del coche: " + miCoche.VelocidadActual);
     }
 }
-\`\`\`
+```
 
 Esta es la clase principal que se encarga de:
 
