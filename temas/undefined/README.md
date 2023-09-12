@@ -1,35 +1,118 @@
-# ¿Qué es undefined en Scala con la biblioteca Option?
-En Scala, undefined se refiere a una variable que no ha sido inicializada. Es decir, es una variable que no tiene un valor asignado y que por lo tanto, no se puede utilizar. En lugar de usar null como en otros lenguajes, en Scala se utiliza Option para manejar la posibilidad de que una variable no tenga un valor asignado.
+# 🚗 Concesionario de Coches en Rust 🚗
 
-Option es una clase en la biblioteca estándar de Scala que representa una variable que puede o no tener un valor asignado. Si la variable tiene un valor, se utiliza la clase Some para almacenar el valor. Si la variable no tiene un valor, se utiliza la clase None.
+## 📝 Índice 📝
 
-## Cómo se ha implementado el código
-A continuación, se presenta un ejemplo de cómo se puede utilizar Option para manejar variables que pueden o no tener un valor asignado en Scala:
+1. [🌟 Descripción General](#descripción-general)
+2. [🛠 Cómo Funciona](#cómo-funciona)
+    - [🚘 Estructura `Dealership`](#estructura-dealership)
+        - [🔨 Método `new()`](#método-new)
+        - [🔨 Método `add_car()`](#método-add_car)
+        - [🔨 Método `find_car()`](#método-find_car)
+    - [🚗 Estructura `Car`](#estructura-car)
+        - [🔑 Campos](#campos)
+    - [🎬 Función `main()`](#función-main)
+        - [🔒 Inicialización](#inicialización)
+        - [💡 Manipulación de Opciones](#manipulación-de-opciones)
+3. [🤔 Comparación: Undefined en Rust vs. Java](#comparación-undefined-en-rust-vs-java)
+4. [🔄 Refactorización Realizada](#refactorización-realizada)
+5. [🏃‍♀️ Cómo Ejecutar el Código](#cómo-ejecutar-el-código)
+6. [📋 Requisitos](#requisitos)
 
-```
-case class Car(make: String, model: Option[String], year: Int)
+---
 
-val car1 = Car("Toyota", Some("Corolla"), 2020)
-val car2 = Car("Honda", None, 2018)
+## 🌟 Descripción General 🌟
 
-def printCarModel(car: Car): Unit = {
-  car.model match {
-    case Some(model) => println(s"The model of the car is: $model")
-    case None => println("The car has no model")
-  }
+Este encantador proyecto simula un **concesionario de coches**. Realizado en Rust, es un excelente ejemplo de cómo gestionar un inventario de objetos de forma segura y eficiente. 
+
+---
+
+## 🛠 Cómo Funciona 🛠
+
+### 🚘 Estructura `Dealership`
+
+Encargada de la gestión completa del concesionario. 
+
+#### 🔨 Método `new()`
+
+Crea un nuevo concesionario vacío. 
+
+```rust
+pub fn new() -> Self {
+    Dealership { cars: Vec::new() }
 }
-
-printCarModel(car1) // Output: The model of the car is: Corolla
-printCarModel(car2) // Output: The car has no model
 ```
 
-En este ejemplo, Car es una clase que representa un coche y tiene tres atributos: make, model y year. model es una variable de tipo Option[String], lo que significa que puede tener un valor Some (en este caso, un String que representa el modelo del coche) o None.
+#### 🔨 Método `add_car()`
 
-Se crean dos objetos car1 y car2 de la clase Car, donde car1 tiene un modelo asignado (Some("Corolla")) y car2 no tiene un modelo asignado (None).
+Añade un nuevo coche al concesionario.
 
-Luego, se define una función printCarModel que toma un objeto Car como parámetro e imprime el modelo del coche si se ha asignado, o "The car has no model" si no se ha asignado.
+```rust
+pub fn add_car(&mut self, car: Car) {
+    self.cars.push(car);
+}
+```
 
-Finalmente, se llama a la función printCarModel con los objetos car1 y car2 como argumentos, lo que muestra la salida esperada en la consola.
+#### 🔨 Método `find_car()`
 
-## Resumen
-En resumen, al utilizar Option para manejar variables que pueden o no tener un valor asignado, podemos evitar errores de tiempo de ejecución al intentar acceder a una variable null o no inicializada. En su lugar, podemos utilizar patrones de coincidencia para manejar las diferentes posibilidades de valores que una variable puede tener.
+Busca un coche por su matrícula y devuelve una opción.
+
+```rust
+pub fn find_car(&self, registration: &str) -> Option<Car> {
+    self.cars.iter().find(|&car| car.registration == registration).cloned()
+}
+```
+
+### 🚗 Estructura `Car`
+
+#### 🔑 Campos
+
+- `registration`: Matrícula 🆔
+- `brand`: Marca 🏎
+- `model`: Modelo 🚗
+- `year`: Año 📅
+
+### 🎬 Función `main()`
+
+#### 🔒 Inicialización
+
+Aquí es donde la magia comienza. Se crea un concesionario y se añaden coches a la colección.
+
+#### 💡 Manipulación de Opciones
+
+En esta sección, verás ejemplos de cómo manipular el tipo `Option`:
+
+- `as_ref()`
+- `expect()`
+- `or()`
+- `or_else()`
+- `and()`
+- `and_then()`
+
+---
+
+## 🤔 Comparación: Undefined en Rust vs. Java 🤔
+
+En Rust, usamos `Option` para representar la posibilidad de ausencia de un valor, mientras que en Java, se usa `null`. 
+
+---
+
+## 🔄 Refactorización Realizada 🔄
+
+No se ha necesitado una refactorización adicional, dado que el código es limpio y sigue las mejores prácticas.
+
+---
+
+## 🏃‍♀️ Cómo Ejecutar el Código 🏃‍♀️
+
+1. Abre **Visual Studio Code** 🚀
+2. Navega a la carpeta del proyecto 📂
+3. Ejecuta `cargo run` en la terminal 💻
+
+---
+
+## 📋 Requisitos 📋
+
+- Rust y Cargo instalados 🦀
+- Un editor de código como Visual Studio Code 💻
+
+---
