@@ -1,85 +1,116 @@
-# DELEGACION EN C#
+# 🚗 Proyecto Coche en C# 🛠️
 
-* Este es un ejemplo sencillo de cómo se puede utilizar la delegación en C# para controlar la velocidad de un objeto Coche mediante el uso de delegates.
+## 📌 Tabla de Contenidos
 
-## Delegacion de la clase coche
+1. [Introducción](#-introducción)
+2. [Cómo Funciona el Código](#-cómo-funciona-el-código)
+3. [Delegación en C#](#-delegación-en-c)
+4. [Diferencias con Java](#-diferencias-con-java)
+5. [Requisitos y Ejecución](#-requisitos-y-ejecución)
 
-* Primero, definimos la clase Coche con sus propiedades y métodos para acelerar y frenar el coche:
+---
 
-~~~
-class Coche
+## 🌟 Introducción
+
+Este proyecto de C# tiene como objetivo demostrar un diseño básico de la clase `Coche`, que puede acelerar y frenar. Este es un ejemplo introductorio para ilustrar el concepto de **delegación** en C#.
+
+---
+
+## 🛠️ Cómo Funciona el Código
+
+### 🚗 Clase `Coche`
+
+#### Código de ejemplo
+
+\`\`\`csharp
+public class Coche
 {
     public string Marca { get; set; }
-    public int Velocidad { get; set; }
+    public string Modelo { get; set; }
+    public int VelocidadActual { get; set; }
 
-    public void Acelerar(int incremento)
+    public Coche(string marca, string modelo)
     {
-        Velocidad += incremento;
+        Marca = marca;
+        Modelo = modelo;
+        VelocidadActual = 0;
     }
 
-    public void Frenar(int decremento)
+    public void Acelerar()
     {
-        Velocidad -= decremento;
+        VelocidadActual += 10;
+    }
+
+    public void Frenar()
+    {
+        VelocidadActual -= 10;
     }
 }
-~~~
+\`\`\`
 
-## Definimos EjecutarControlador
+- 🏷️ **Propiedades**
+  - `Marca`: La marca del coche (ej. "Toyota").
+  - `Modelo`: El modelo específico (ej. "Corolla").
+  - `VelocidadActual`: Velocidad a la que se desplaza el coche; inicialmente se establece en 0.
 
-* Verifica si el delegate es nulo antes de invocarlo.
+- 🎯 **Métodos**
+  - `Acelerar()`: Aumenta la `VelocidadActual` en 10 unidades.
+  - `Frenar()`: Disminuye la `VelocidadActual` en 10 unidades.
 
-~~~
-public static void EjecutarControlador(ControladorCoche controlador, Coche coche)
-    {
-        if (controlador != null)
-        {
-            controlador(coche);
-        }
-    }
-~~~
+### 🖥️ Clase `Program`
 
-## Uso de la delegación en el método Main
+#### Código de ejemplo
 
-* En el método Main, creamos un objeto Coche y una variable miControlador de tipo ControladorCoche, que inicialmente está a null. Luego, asignamos el método AcelerarCoche al delegate mediante el operador +=. Esto significa que ahora miControlador apunta a este método:
-
-~~~
-Coche miCoche = new Coche();
-ControladorCoche miControlador = null;
-miControlador += AcelerarCoche;
-~~~
-
-* Luego, asignamos el método FrenarCoche al delegate mediante el operador +=. Esto significa que ahora miControlador apunta a ambos métodos:
-
-~~~
-miControlador += FrenarCoche;
-~~~
-
-* Finalmente, el método EjecutarControlador toma el delegate y el objeto Coche como argumentos y verifica si el delegate es nulo antes de invocarlo. Al utilizar un método intermediario de esta manera, se puede agregar lógica adicional antes y después de la ejecución del delegate.
-
-~~~
-EjecutarControlador(miControlador, miCoche);
-~~~
-## Evento delegate 
-
-* Esto convierte el delegate en un evento, lo que significa que solo se puede agregar o quitar métodos del delegate desde dentro de la clase que lo define. En otras palabras, no se puede invocar directamente el delegate desde fuera de la clase.
-
-~~~
-public event ControladorCoche MiEvento;
-~~~
-
-## Métodos AcelerarCoche y FrenarCoche
-
-* Estos son los métodos que hemos utilizado para acelerar y frenar el coche. Ambos métodos reciben un objeto Coche como argumento y no devuelven ningún valor:
-
-~~~
-static void AcelerarCoche(Coche coche)
+\`\`\` csharp
+public class Program
 {
-    coche.Acelerar(10);
-    Console.WriteLine("El coche ha acelerado a {0} km/h", coche.Velocidad);
-}
-
-public static void FrenarCoche(Coche coche)
+    public static void Main(string[] args)
     {
-        coche.Frenar();
+        Coche miCoche = new Coche("Toyota", "Corolla");
+        ControladorCoche miControlador = AcelerarCoche;
+        miControlador += FrenarCoche;
+        EjecutarControlador(miControlador, miCoche);
+        Console.WriteLine("Velocidad actual del coche: " + miCoche.VelocidadActual);
     }
-~~~
+}
+\`\`\`
+
+Esta es la clase principal que se encarga de:
+
+- Crear una instancia de `Coche`.
+- Utilizar un delegado para controlar la aceleración y la frenada.
+
+---
+
+## 📬 Delegación en C#
+
+La delegación es un patrón de diseño en el cual un objeto delega la ejecución de una tarea a otro objeto. C# ofrece un tipo especial llamado **delegado** para hacer esto.
+
+- **`ControladorCoche`**: Este es un delegado personalizado que apunta a métodos que toman un `Coche` como parámetro y devuelven `void`.
+
+---
+
+## ☕ Diferencias con Java
+
+1. **Delegados vs Interfaces Funcionales**: C# usa delegados, mientras que Java usa interfaces funcionales para lograr la delegación.
+2. **Modificadores de Acceso**: C# tiene tipos como `internal`, que no tienen un equivalente directo en Java.
+3. **Tipos Anónimos**: C# permite tipos anónimos; Java no.
+
+---
+
+## 🚀 Requisitos y Ejecución
+
+### 📋 Requisitos
+
+- Asegúrese de tener instalado el [.NET SDK](https://dotnet.microsoft.com/download).
+
+### 🏃‍♂️ Ejecución
+
+1. **Clonar el Repositorio**: `git clone <URL del repositorio>`.
+2. **Navegar a la Carpeta del Proyecto**: `cd <nombre de la carpeta>`.
+3. **Ejecutar el Proyecto**: `dotnet run`.
+
+Esto imprimirá la velocidad actual del coche en la terminal.
+
+
+
