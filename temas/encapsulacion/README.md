@@ -1,52 +1,107 @@
-# ENCAPSULACION EN RUBY
+# 🌟📚 **Gestión de Personas y Empleados en Ruby** 📚🌟
 
-  * En este ejemplo se crean dos clases en Ruby: Persona y Empleado. La clase Empleado es una subclase de la clase Persona, lo que significa que hereda todos los atributos y métodos de la clase Persona.
+---
 
-## Clase Persona
-* La clase Persona tiene tres atributos de instancia: nombre, edad y contraseña. Se utilizan los métodos attr_reader y attr_accessor para crear métodos de acceso para estos atributos. Además, se definen dos métodos de instancia adicionales:
+## 📌 **Tabla de Contenidos** 📌
 
-     1. comprobar: toma una contraseña como argumento y compara si coincide con la contraseña almacenada en la instancia de Persona.
-     ~~~
-     def comprobar(contraseña)
-      contraseña == @contrasena
-     end
-     ~~~
-     2. ComprobarID: es un método privado que verifica la identidad de la persona, aunque la lógica específica para esta verificación no se define en este ejemplo.
-     ~~~
-     def ComprobarID(id)
-     # Lógica para verificar la identidad de la personaaa
-     end
-     ~~~
+1. [✨ Descripción General ✨](#-descripción-general-)
+2. [🔍 Cómo Funciona 🔍](#-cómo-funciona-)
+   - [🙎‍♂️ Clase Base: Persona 🙎‍♂️](#-clase-base-persona-)
+   - [💼 Clase Derivada: Empleado 💼](#-clase-derivada-empleado-)
+3. [🛡 Encapsulación en Ruby 🛡](#-encapsulación-en-ruby-)
+4. [🔄 Diferencias con Java 🔄](#-diferencias-con-java-)
+5. [⚙ Ejecución y Requisitos ⚙](#-ejecución-y-requisitos-)
 
-* También se define un método dirección como método protegido. Este método podría utilizarse para obtener la dirección de la persona, aunque la lógica específica para obtener la dirección no se define en este ejemplo.
+---
 
-## Clase Empleado
-* La clase Empleado hereda los atributos y métodos de la clase Persona utilizando la palabra clave super. Además, se definen dos métodos de instancia adicionales:
+## ✨📃 Descripción General 📃✨
 
-     1. obtenerDireccion: llama al método protegido dirección de la clase Persona para obtener la dirección de la persona.
-     ~~~
-     def obtenerDireccion
-      dirección
-     end
-     ~~~
-     2. verificarID: llama al método privado ComprobarID de la clase Persona para verificar la identidad del empleado.
-     ~~~
-     def verificarID(id)
-      ComprobarID(id)
-     end
-     ~~~
-## Uso
-* Se crean una instancia de Persona llamada persona y una instancia de Empleado llamada empleado. Luego, se utilizan los métodos de instancia definidos para leer y escribir en los atributos de las instancias, y para verificar la identidad y la dirección de la persona y el empleado.
+Este código en Ruby define **dos** clases majestuosas:
 
-## Encapsulación en ruby, ¿como es?:
-* En Ruby, la visibilidad de los métodos es una convención que ayuda a ocultar la implementación de los métodos privados y protegidos de las clases. El método ComprobarID es privado para garantizar la seguridad de los datos y el método dirección es protegido para permitir que las subclases accedan a él. Aunque no hay una forma estricta de ocultar la implementación de un método en Ruby, estas convenciones son útiles para mantener la estructura del código y la privacidad de los dato
-~~~
-protected
+- 🙎‍♂️ **Persona**: Contiene atributos y métodos generales para cualquier persona.
+- 💼 **Empleado**: Hereda de `Persona` y añade funcionalidades específicas para empleados.
+
+---
+
+## 🔍 Cómo Funciona 🔍
+
+### 🙎‍♂️ Clase Base: Persona 🙎‍♂️
+
+```ruby
+class Persona
+  attr_reader :nombre, :edad
+  attr_accessor :contraseña
   
-    def dirección
-      # Lógica para obtener la dirección de la personaaa
-    end
+  def initialize(nombre, edad, contrasena)
+    @nombre = nombre
+    @edad = edad
+    @contrasena = contrasena
   end
-~~~
-## Conclusiones
-* Este ejemplo muestra cómo se pueden utilizar los mecanismos de encapsulación en Ruby para proteger los datos y la funcionalidad de una clase y sus subclases, y cómo se pueden utilizar los métodos de acceso para leer y escribir en los atributos de las instancias.
+  
+  def comprobar(contraseña)
+    contraseña == @contrasena
+  end
+end
+```
+
+#### 🎯 Funciones Principales 🎯
+
+- initialize: Constructor de la clase.
+- comprobar: Compara una contraseña proporcionada con la almacenada en la clase.
+
+## 💼 Clase Derivada: Empleado 💼
+
+```ruby
+class Empleado < Persona
+  def initialize(nombre, edad, contraseña, id)
+    super(nombre, edad, contraseña)
+    @id = id
+  end
+end
+
+```
+
+#### 🎯 Funciones Principales 🎯
+
+- initialize: Constructor de la clase que también inicializa el id del empleado.
+
+
+
+## 🛠 Refactorización del Código 
+
+> **🌟 Resumen:**  
+> Este apartado tiene como objetivo **explicar** las **técnicas de refactorización** aplicadas al código para mejorar su legibilidad, mantenibilidad y eficiencia.
+
+---
+
+### 📜 Técnicas Utilizadas
+
+1. **🔍 Extraer Método**:  
+    - 📝 *Descripción*: Mantener los métodos bien separados para cumplir con una única responsabilidad.
+    - 🧩 *Ejemplo*: Método `comprobar` en la clase `Persona`.
+
+2. **📛 Usar Nombres Descriptivos**:  
+    - 📝 *Descripción*: Utilizar nombres de métodos y variables que sean lo más descriptivos posible.
+    - 🧩 *Ejemplo*: Variables como `contraseña`, `nombre`, `edad`.
+
+3. **🔒 Encapsulación**:  
+    - 📝 *Descripción*: Utilizar niveles apropiados de encapsulación (`public`, `protected`, `private`) para controlar el acceso a los métodos y variables.
+    - 🧩 *Ejemplo*: Uso de `private` y `protected` en la clase `Persona`.
+
+## 🛡 Encapsulación en Ruby 🛡
+
+- Public: Accesibles desde cualquier parte.
+- Protected: Sólo accesibles por instancias de la misma clase o subclases.
+- Private: Sólo accesibles dentro de la misma instancia de clase.
+
+## 🔄 Diferencias con Java 🔄
+
+1. Herencia: En Ruby, se utiliza < vs. extends en Java.
+2. Encapsulación: Palabras clave ligeramente diferentes.
+3. Constructores: initialize en Ruby vs. nombre de la clase en Java.
+4. Tipado: Dinámico en Ruby vs. estático en Java
+
+## ⚙ Ejecución y Requisitos ⚙
+
+1. Instalación de Ruby: Asegúrese de tener Ruby instalado en su sistema.
+2. Ejecución: Guarde el código en un archivo .rb y ejecute con el comando ruby nombre_del_archivo.rb.
