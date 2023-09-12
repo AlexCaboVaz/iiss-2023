@@ -22,7 +22,7 @@ Este proyecto de C# tiene como objetivo demostrar un diseño básico de la clase
 
 #### Código de ejemplo
 
-``` csharp
+```csharp
 public class Coche
 {
     public string Marca { get; set; }
