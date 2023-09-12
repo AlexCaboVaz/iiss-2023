@@ -2,7 +2,7 @@
 
 ## 📝 Índice 📝
 
-1. [🌟 Descripción General](#descripción-general)
+1. [🌟 Descripción General](#Descripción-General)
 2. [🛠 Cómo Funciona](#cómo-funciona)
     - [🚘 Estructura `Dealership`](#estructura-dealership)
         - [🔨 Método `new()`](#método-new)
