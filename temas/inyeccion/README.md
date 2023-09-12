@@ -1,111 +1,125 @@
-# Inyección de Dependencias en Ruby con Dry::Container
+# Sistema de Gestión de Empleados en Ruby
 
-- Este documento describe cómo implementar la inyección de dependencias en Ruby utilizando la gema Dry::Container. La inyección de dependencias es un patrón de diseño utilizado en programación para aumentar la eficiencia y modularidad del código.
+---
 
-- Dry::Container es una biblioteca en Ruby para gestionar dependencias. Permite registrar recursos con claves únicas y luego resolverlos cuando se necesiten. Se puede usar junto con dry-auto_inject para la inyección automática de dependencias, haciendo el código más modular y fácil de gestionar.
+## 📌 Índice 📌
 
-## Requerimientos
+1. [📚 Descripción General](#descripción-general)
+2. [🔍 Cómo Funciona](#cómo-funciona)
+   - [📚 Clase EmployeeDatabase](#-clase-employeedatabase-)
+   - [🛠️ Clase EmployeeManager](#-clase-employeemanager-)
+   - [🌟 Clase MyApp](#-clase-myapp-)
+   - [📦 Inyección de Dependencias](#inyección-de-dependencias)
+3. [🤔 Inyección de Dependencias en Ruby vs Java](#inyección-de-dependencias-en-ruby-vs-java)
+4. [♻️ Refactorización del Código](#refactorización-del-código)
+5. [🏁 Cómo Ejecutar el Código](#cómo-ejecutar-el-código)
+6. [🛠 Requisitos](#requisitos)
+7. [💡 Explicación del Código](#explicación-del-código)
 
-- Ruby
-- Gema dry-container
-- Gema dry-auto_inject
+---
 
-## Código
+## 📚 Descripción General 📚
 
-### Configuración del contenedor - MyContainer
+Este proyecto en Ruby demuestra un Sistema de Gestión de Empleados que utiliza **Inyección de Dependencias** para gestionar las dependencias entre clases. Utiliza las gemas `Dry-Container` y `Dry-AutoInject` para lograrlo.
 
-- Primero, definimos una clase llamada MyContainer que se extiende con Dry::Container::Mixin. Este mixin nos proporciona métodos para registrar y resolver dependencias.
+---
 
+## 🔍 Cómo Funciona 🔍
+
+### 📚 Clase `EmployeeDatabase` 📚
+
+Esta clase actúa como un almacén de datos para los empleados. Utiliza un hash interno para mantener el estado de los empleados. 
+
+```ruby
+def add_employee(id, name)
+  @data[id] = name
+end
+
+def get_employee(id)
+  @data[id]
+end
 ```
 
+### 🛠️ Clase `EmployeeManager` 🛠️
+
+Esta clase se encarga de las operaciones de gestión de empleados, como añadir un nuevo empleado y buscar un empleado existente. Toma una instancia de `EmployeeDatabase` como una dependencia.
+
+```ruby
+def register_employee(id, name)
+  @employee_database.add_employee(id, name)
+end
+
+def find_employee(id)
+  @employee_database.get_employee(id)
+end
+```
+
+### 🌟 Clase `MyApp` 🌟
+
+Esta clase es la que realmente ejecuta nuestro programa. Utiliza la inyección de dependencias para obtener una instancia de `EmployeeManager` y luego realiza operaciones en ella.
+
+```ruby
+employee_manager.register_employee(1, 'Alice')
+employee_manager.register_employee(2, 'Bob')
+
+puts employee_manager.find_employee(1)
+puts employee_manager.find_employee(2)
+```
+
+Con `Dry-AutoInject`, la inyección de la instancia se maneja automáticamente, lo que permite un acoplamiento más débil y una mayor facilidad para las pruebas.
+
+
+### 📦 Inyección de Dependencias 📦
+
+La inyección de dependencias se gestiona a través del contenedor de dependencias `MyContainer`. Aquí es donde se registran las diferentes clases que necesitaremos.
+
+```ruby
 class MyContainer
   extend Dry::Container::Mixin
 
   register('employee_database') { EmployeeDatabase.new }
   register('employee_manager') { EmployeeManager.new(MyContainer['employee_database']) }
 end
-
-
 ```
 
-- Aquí registramos dos dependencias: employee_database y employee_manager. Note que employee_manager depende de employee_database.
+La clase `EmployeeManager` depende de `EmployeeDatabase`. Esta dependencia se inyecta en tiempo de ejecución.
 
-### Implementación de clases - EmployeeDatabase y EmployeeManager
-
-- EmployeeDatabase es una clase simple que mantiene un hash de empleados.
-- EmployeeManager es otra clase que depende de EmployeeDatabase.
-
-```
-class EmployeeDatabase
-  # ...
-end
-
+```ruby
 class EmployeeManager
   def initialize(employee_database)
     @employee_database = employee_database
   end
   # ...
 end
-
 ```
 
-### Auto-inyección - MyInject
+## 🤔 Inyección de Dependencias en Ruby vs Java 🤔
 
-- Creamos un módulo MyInject que nos ayudará a inyectar automáticamente dependencias en nuestras clases.
+- **Ruby**: Usa metaprogramación y la gema Dry-Container para inyección de dependencias, haciendo el código más flexible pero también más mágico.
+  
+- **Java**: Tiende a usar anotaciones e interfaces para lograr la inyección de dependencias, haciéndolo más explícito pero tal vez más verboso.
 
-```
-MyInject = Dry::AutoInject(MyContainer)
+---
 
+## ♻️ Refactorización del Código ♻️
 
-```
+El código ha sido refactorizado para utilizar `Dry-Container` y `Dry-AutoInject`, permitiendo un mejor manejo de las dependencias y facilitando las pruebas unitarias.
 
+---
 
-### Clase principal - MyApp
+## 🏁 Cómo Ejecutar el Código 🏁
 
-- La clase MyApp incluye el módulo MyInject para inyectar la dependencia de employee_manager automáticamente.
+1. Abre una terminal.
+2. Navega hasta el directorio del proyecto.
+3. Ejecuta `ruby nombre_del_archivo.rb`.
 
-```
-class MyApp
-  include MyInject['employee_manager']
-  # ...
-end
+---
 
+## 🛠 Requisitos 🛠
 
-```
+- Ruby 2.6 o superior
+- Gema Dry-Container
+- Gema Dry-AutoInject
 
-### Inicialización y ejecución
+---
 
-- Finalmente, creamos una instancia de MyApp y llamamos al método call.
-
-```
-
-app = MyApp.new(employee_manager: MyContainer['employee_manager'])
-app.call
-
-
-```
-
-### Cómo funciona la Inyección de Dependencias
-
-1. MyContainer registra todas las dependencias necesarias.
-2. EmployeeManager se configura para recibir una instancia de EmployeeDatabase.
-3. MyApp se configura para recibir una instancia de EmployeeManager.
-4. Al inicializar MyApp, se resuelven todas las dependencias automáticamente.
-
-## Diferencia con Java
-
-- Ruby:
-
-    1. Herramienta: Dry::Container
-    2. Estilo: Fluida, sencilla
-    3. Práctica: Registro directo de dependencias
-    4. Filosofía: Convención sobre configuración
-
-- Java:
-
-    1. Herramienta: Spring
-    2. Estilo: Formal, robusta
-    3. Práctica: Anotaciones para inyección
-    4. Filosofía: Configuración explícita
-
-- Ambos buscan modularidad y desacoplamiento, pero con enfoques distintos.
