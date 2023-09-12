@@ -1,106 +1,110 @@
-# Programación Asíncrona en Rust
+# 🚗 Gestión de Estacionamiento en Rust 🚗
 
-- Este programa en Rust utiliza el runtime de Tokio para simular la gestión de un estacionamiento con espacios regulares y espacios VIP.
+---
 
-## Dependencias
+## 📌 Índice 📌
 
-- Para este proyecto, es necesario instalar las siguientes dependencias.
+1. [📚 Descripción General](#descripción-general)
+2. [🔍 Cómo Funciona](#cómo-funciona)
+    - [📦 Importación de Bibliotecas](#importación-de-bibliotecas)
+    - [🚀 Enums y Estructuras](#enums-y-estructuras)
+    - [🔧 Métodos](#métodos)
+3. [🤔 Programación Asíncrona en Rust](#programación-asíncrona-en-rust)
+4. [🤔 Diferencias entre Rust y Java](#diferencias-entre-rust-y-java)
+5. [♻️ Refactorización Realizada](#refactorización-realizada)
+6. [🏁 Cómo Ejecutar el Código](#cómo-ejecutar-el-código)
+7. [🛠 Requisitos](#requisitos)
 
-```
+---
 
-[dependencies]
-tokio = { version = "1", features = ["full"] }
-rand = "0.8.0"
+## 📚 Descripción General 📚
 
+Este proyecto en Rust demuestra la utilización de la **programación asíncrona** y **semáforos** en la gestión de un estacionamiento de coches.
 
-```
+---
 
-## Cómo funciona
+## 🔍 Cómo Funciona 🔍
 
-### Enum "CarType"
+### 📦 Importación de Bibliotecas 📦
 
-- Define los tipos de coche que pueden entrar al estacionamiento. Los tipos disponibles son Regular y Vip.
+\`\`\`rust
+use tokio::sync::{Semaphore, Mutex};
+use tokio::time::{sleep, Duration};
+use std::sync::Arc;
+use rand::{Rng, SeedableRng};
+use rand::rngs::StdRng;
+\`\`\`
 
-```
+Se importan las bibliotecas necesarias para gestionar la concurrencia (`tokio`), generar números aleatorios (`rand`), y otras utilidades estándar de Rust (`std`).
+
+### 🚀 Enums y Estructuras 🚀
+
+#### 🚗 Enumeración: CarType 🚗
+
+```rust
+#[derive(Debug)]
 enum CarType {
     Regular,
     Vip,
 }
-
 ```
 
-### Estructura "Car"
+Esta enumeración define los dos tipos de coches que pueden entrar al estacionamiento: Regular y Vip.
 
-- id: un identificador único para cada coche.
-- car_type: el tipo de coche (Regular o Vip).
+#### 🚗 Estructura: Car 🚗
 
-```
+```rust
 struct Car {
     id: u32,
     car_type: CarType,
 }
 ```
 
-### Método "park" en "car"
+La estructura `Car` tiene dos campos:
 
-- Este método es una función asíncrona que toma semáforos para espacios de estacionamiento regulares y VIP. Adquiere un permiso del semáforo correspondiente y "estaciona" el coche durante un tiempo aleatorio antes de liberar el permiso.
+- `id`: El identificador único del coche (u32).
+- `car_type`: El tipo del coche (Regular o Vip), definido por la enumeración `CarType`.
 
-```
-async fn park(&self, semaphore: Arc<Semaphore>, vip_semaphore: Arc<Semaphore>) {
-    // ... Código ...
-}
+### 🔧 Métodos 🔧
 
-```
+- `park()`: Este método asincrónico maneja el proceso de estacionamiento del coche, utilizando semáforos para asegurar que hay espacio disponible.
+- `manage_parking_lot()`: Este método asincrónico gestiona todo el estacionamiento.
 
-### Función manage_parking_lot
+## 🤔 Programación Asíncrona en Rust 🤔
 
-- Es una función asíncrona que controla el flujo de coches en el estacionamiento. Crea coches de forma aleatoria y los pone en una cola. Luego, inicia tareas asíncronas para "estacionar" estos coches.
+Rust utiliza la biblioteca `tokio` para manejar tareas asincrónicas. A diferencia de Java, que tiene un sistema de hilos incorporado, Rust utiliza un modelo de actor ligero para la concurrencia. El uso de `async/await` en Rust es muy parecido al de Java, pero Rust ofrece control más granular sobre las tareas.
 
-```
-async fn manage_parking_lot(semaphore: Arc<Semaphore>, vip_semaphore: Arc<Semaphore>, queue: Arc<Mutex<Vec<Car>>>) {
-    // ... Código ...
-}
+## 🤔 Diferencias entre Rust y Java 🤔
 
-```
+### 💎 Sintaxis 💎
+- **Rust**: `async fn`
+- **Java**: `Future<>`
 
-### Funcion "Main"
+### 🔒 Control de Concurrency 🔒
+- **Rust**: `tokio::sync`
+- **Java**: `java.util.concurrent`
 
-- Configura el runtime de Tokio y llama a manage_parking_lot.
+### 💡 Asincronía 💡
+- **Rust**: `async/await`
+- **Java**: `CompletableFuture`
 
-```
+## ♻️ Refactorización Realizada ♻️
 
-#[tokio::main]
-async fn main() {
-    // ... Código ...
-}
+No se realizaron cambios significativos en el código, ya que es bastante claro y modular.
 
-```
+## 🏁 Cómo Ejecutar el Código 🏁
 
-## Conceptos utilizados
+Para ejecutar este proyecto:
 
-- Semáforos: Utilizados para controlar el acceso a los espacios de estacionamiento.
-- Mutex: Se utiliza para garantizar el acceso exclusivo a la cola de coches.
-- Tareas asíncronas: Utilizadas para simular el estacionamiento de coches de forma concurrente.
+1. Clone el repositorio.
+2. Navegue hasta el directorio del proyecto.
+3. Ejecute `cargo build`.
+4. Ejecute `cargo run`.
 
-## Cómo ejecutar
+## 🛠 Requisitos 🛠
 
-- Después de agregar las dependencias en Cargo.toml, puedes ejecutar el programa utilizando cargo run.
+- Rust 1.39 o superior.
+- Cargo, el gestor de paquetes de Rust.
 
+---
 
-## Diferencias con Java
-
-### Rust
-
-- Usa el modelo de "async/await" nativo del lenguaje para manejar la asincronía.
-- Basado en "Futures" y "Tasks" que son ejecutados por un runtime como Tokio.
-- Ofrece control más granular sobre la concurrencia.
-- Tipo de sistema con verificación en tiempo de compilación para garantizar la seguridad de la concurrencia (por ejemplo, garantiza que un objeto sea Send para transferirlo entre hilos).
-
-### Java
-
-- Tradicionalmente ha utilizado hilos y bloqueo para manejar la asincronía.
-- Las bibliotecas modernas (como CompletableFuture) permiten un estilo más funcional de programación asíncrona.
-
-
-- En general, menos control granular en comparación con Rust; más orientado a un modelo de alto nivel.
--Ambos lenguajes pueden lograr tareas similares en lo que respecta a la asincronía, pero lo hacen de maneras diferentes y con diferentes ventajas y desventajas.
