@@ -25,9 +25,11 @@ Este proyecto de C# tiene como objetivo demostrar un diseño básico de la clase
 ```csharp
 public class Coche
 {
+    private const int VelocidadIncremento = 15;
+
     public string Marca { get; set; }
     public string Modelo { get; set; }
-    public int VelocidadActual { get; set; }
+    public int VelocidadActual { get; private set; }
 
     public Coche(string marca, string modelo)
     {
@@ -38,14 +40,15 @@ public class Coche
 
     public void Acelerar()
     {
-        VelocidadActual += 10;
+        VelocidadActual += VelocidadIncremento;
     }
 
     public void Frenar()
     {
-        VelocidadActual -= 10;
+        VelocidadActual = Math.Max(0, VelocidadActual - VelocidadIncremento);
     }
 }
+
 ```
 
 - 🏷️ **Propiedades**
@@ -54,8 +57,8 @@ public class Coche
   - `VelocidadActual`: Velocidad a la que se desplaza el coche; inicialmente se establece en 0.
 
 - 🎯 **Métodos**
-  - `Acelerar()`: Aumenta la `VelocidadActual` en 10 unidades.
-  - `Frenar()`: Disminuye la `VelocidadActual` en 10 unidades.
+  - Acelerar(): Aumenta la VelocidadActual en 15 unidades (definidas por VelocidadIncremento).
+  - Frenar(): Disminuye la VelocidadActual en 15 unidades (definidas por VelocidadIncremento).
 
 ### 🖥️ Clase `Program`
 
@@ -81,6 +84,13 @@ Esta es la clase principal que se encarga de:
 - Utilizar un delegado para controlar la aceleración y la frenada.
 
 ---
+
+## 🧹 Refactorización
+
+- Se ha cambiado el modificador de acceso del setter de VelocidadActual a private para un mejor encapsulamiento.
+- Se ha utilizado una constante VelocidadIncremento para el valor que se añade o resta al acelerar y frenar.
+- Se han dividido las responsabilidades en dos clases separadas para seguir el principio de Responsabilidad Única.
+
 
 ## 📬 Delegación en C#
 
