@@ -26,9 +26,9 @@ Este proyecto en Rust demuestra la utilización de **macros de procedimiento** p
 
 ### 📦 Importación de Crates 📦
 
-\`\`\`rust
+```rust
 extern crate vehicle_info_macro;
-\`\`\`
+```
 
 Importamos el crate que contiene la macro de procedimiento `vehicle_info`.
 
@@ -36,14 +36,14 @@ Importamos el crate que contiene la macro de procedimiento `vehicle_info`.
 
 #### 🚗 Estructura Base: Car 🚗
 
-\`\`\`rust
+```rust
 #[vehicle_info]
 struct Car {
     brand: String,
     model: String,
     year: u32,
 }
-\`\`\`
+```
 
 Esta estructura define las propiedades básicas que tendrán todos los vehículos:
 
@@ -55,7 +55,7 @@ Esta estructura define las propiedades básicas que tendrán todos los vehículo
 
 La macro `vehicle_info` añade un método `info` al `struct` anotado, que devuelve una cadena con detalles del vehículo.
 
-\`\`\`rust
+```rust
 impl Car {
     pub fn info(&self) -> String {
         format!(
@@ -66,7 +66,7 @@ impl Car {
         )
     }
 }
-\`\`\`
+```
 
 ## 🤔 Anotaciones en Rust 🤔
 
