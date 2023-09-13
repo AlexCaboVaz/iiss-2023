@@ -1,122 +1,96 @@
-# Anotaciones en RUST
+# 🚗 Gestión de Vehículos en Rust 🚗
 
-- En el lenguaje de programacion RUST las anotaciones son metadatos que se pueden agregar módulos del código para modificar su comportamiento o para interactuar con herramientas externas. Estas anotaciones como vemos en el código se especifican con el simbolo '#[]'.
+---
 
-- En este ejercicio hemos usado la anotación personalizada para modificar el comportamiento de una estructura de datos, y esa anotación es nuestro macro personalizado.
+## 📌 Índice 📌
 
-## Definicion de la Anotación
+1. [📚 Descripción General](#descripción-general)
+2. [🔍 Cómo Funciona](#cómo-funciona)
+    - [📦 Importación de Crates](#importación-de-crates)
+    - [🚀 Estructuras y Propiedades](#estructuras-y-propiedades)
+    - [🔧 Macros de Procedimiento](#macros-de-procedimiento)
+3. [🤔 Anotaciones en Rust](#anotaciones-en-rust)
+4. [♻️ Técnicas de Refactorización](#técnicas-de-refactorización)
+5. [🏁 Cómo Ejecutar el Código](#cómo-ejecutar-el-código)
+6. [🛠 Requisitos](#requisitos)
 
-- En el archivo lib.rs de vehicle_info_macro, definimos una función de macro:
+---
 
-```
-#[proc_macro]
-pub fn vehicle_info(_item: TokenStream) -> TokenStream {
-    // ... código del macro ...
-}
-```
+## 📚 Descripción General 📚
 
-- La anotación #[proc_macro] indica que la funcion a continuación, vehicle_info, se debe tratar como un macro procesador.
+Este proyecto en Rust demuestra la utilización de **macros de procedimiento** para generar código de manera dinámica y también ejemplifica el uso de **anotaciones** en la programación.
 
-## Uso de la Anotación
+---
 
-- En main.rs aplicamos la anotacion (o macro) a una estructura
+## 🔍 Cómo Funciona 🔍
 
-```
+### 📦 Importación de Crates 📦
+
+\`\`\`rust
+extern crate vehicle_info_macro;
+\`\`\`
+
+Importamos el crate que contiene la macro de procedimiento `vehicle_info`.
+
+### 🚀 Estructuras y Propiedades 🚀
+
+#### 🚗 Estructura Base: Car 🚗
+
+\`\`\`rust
 #[vehicle_info]
 struct Car {
     brand: String,
     model: String,
-    year: i32,
+    year: u32,
 }
-```
+\`\`\`
 
-- Aqui #[vehicle_info] es una anotación que aplica el macro que definimos anteriormente a la estructura Car.
+Esta estructura define las propiedades básicas que tendrán todos los vehículos:
 
-- Cuando el compilador de Rust ve esta anotación, llamara a nuestra funcion macro vehicle_info y le pasara la estructura Car (como un TokenStream). Nuestro macro procesara esta estructura y generara código adicional para ella (en este caso, una funcion).
+- brand: La marca del vehículo (String).
+- model: El modelo del vehículo (String).
+- year: El año de fabricación (u32).
 
-## Resultado
+### 🔧 Macros de Procedimiento 🔧
 
-- Como resultado de aplicar la anotación, la estructura Car, ahora tiene una función adicional llamada vehicle_info, que no se definio explicitamente en el código original pero fue generada por el macro. Esto se evidencia en el código principal:
+La macro `vehicle_info` añade un método `info` al `struct` anotado, que devuelve una cadena con detalles del vehículo.
 
-```
-fn main() {
-    let my_car = Car {
-        brand: "Toyota".to_string(),
-        model: "Corolla".to_string(),
-        year: 2020,
-    };
-    println!("{}", my_car.vehicle_info());
+\`\`\`rust
+impl Car {
+    pub fn info(&self) -> String {
+        format!(
+            "Este es un vehículo del tipo: Car\nMarca: {}\nModelo: {}\nAño: {}",
+            self.brand,
+            self.model,
+            self.year
+        )
+    }
 }
-```
+\`\`\`
 
-- Aquí, my_car.vehicle_info() es posible gracias a la anotación que aplicamos a Car.
+## 🤔 Anotaciones en Rust 🤔
 
-## Diferencias con Java
+Las macros de procedimiento permiten una forma de metaprogramación en Rust. Con `vehicle_info`, hemos generado dinámicamente un método que opera en cualquier estructura que tenga las propiedades adecuadas, haciendo que el código sea más reutilizable y modular.
 
-- Las anotaciones en Rust como en Java cumplen el propósito general de proporcionar metadatos adicionales sobre el código, pero se utilizan de manera diferente y tienen capacidades distintas. Podemos ver estas difenrencias en el proposito, en el acceso a tiempo de ejecución, la sintaxis...
+## ♻️ Técnicas de Refactorización ♻️
 
+- **Modularización**: Se ha separado la lógica de la macro en su propia función para mejorar la legibilidad y el mantenimiento.
+- **Extendibilidad**: La macro podría modificarse fácilmente para manejar más tipos de vehículos o más propiedades.
+- **Documentación completa**: Todos los componentes del código están bien documentados para facilitar la comprensión.
 
-## Explicación del código
+## 🏁 Cómo Ejecutar el Código 🏁
 
-1. Macro vehicle_info_macro
-    - El archivo lib.rs en el directorio vehicle_info_macro contiene el código que define cómo funciona el macro vehicle_info.
+Para ejecutar este proyecto:
 
-    ```
-    extern crate proc_macro;
+1. Clone el repositorio
+2. Navegue hasta el directorio del proyecto
+3. Ejecute `cargo build`
+4. Ejecute `cargo run`
 
-    use proc_macro::TokenStream;
-    use quote::quote;
-    use syn::{parse_macro_input, ItemStruct};
-    ```
-    - proc_macro: Es una biblioteca de Rust que proporciona funcionalidades para escribir macros personalizados
-    - quote: Es una biblioteca que proporciona una serie de utilidades para generar código Rust.
-    - syn: Es otra biblioteca que se utiliza para analizar código Rust en una forma que sea más fácil de manipular y entender.
+## 🛠 Requisitos 🛠
 
-    ```
-    #[proc_macro]
-    pub fn vehicle_info(_item: TokenStream) -> TokenStream {
-    // ... código del macro ...
-    }
+- Rust 1.40.0 o superior.
+- Cargo, el gestor de paquetes de Rust.
 
-    ```
+---
 
-    - #[proc_macro] indica que estamos definiendo un macro procesador, que toma un TokenStream (representa un fragmento de código) y produce otro TokenStream.
-    - La función vehicle_info es el corazón de nuestro macro. Esta función toma un fragmento de código, lo manipula, y produce un nuevo fragmento de código.
-
-
-    - Dentro de la función vehicle_info, analizamos el TokenStream entrante y generamos un nuevo fragmento de código que define la función vehicle_info para la estructura.
-
-
-2. Usando el Macro vehicle_info en main.rs:
-   ```
-    use vehicle_info_macro::vehicle_info;
-    ```
-
-    - Esto nos permite usar el macro vehicle_info en nuestro archivo principal.
-
-    ```
-    #[vehicle_info]
-    truct Car {
-    brand: String,
-    model: String,
-    year: i32,
-    }
-    ```
-
-    - Aquí definimos una estructura Car. La anotación #[vehicle_info] indica que queremos que el macro vehicle_info procese esta estructura. El macro generará automáticamente una función vehicle_info para esta estructura.
-
-    ```
-    fn main() {
-    let my_car = Car {
-        brand: "Toyota".to_string(),
-        model: "Corolla".to_string(),
-        year: 2020,
-    };
-    println!("{}", my_car.vehicle_info());
-    }
-    ```
-
-    - Aquí creamos una instancia de Car y luego llamamos a la función vehicle_info (que fue generada por el macro) para imprimir información sobre el coche.
-
-3. Resumen
-    - En resumen, lo que hicimos fue definir un macro que, cuando se aplica a una estructura, genera automáticamente una función para esa estructura. Luego usamos ese macro en nuestro programa principal para agregar una función a nuestra estructura Car.
