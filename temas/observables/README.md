@@ -1,138 +1,99 @@
-# OBSERVABLES EN KOTLIN
+# 📱 RxJava en Kotlin para Observables 📱
 
-- Este proyecto de ejemplo utiliza RxJava 3 para demostrar conceptos avanzados de programación reactiva en Kotlin. El programa crea varios Observables y un Single, además de un PublishSubject para emitir eventos. Todos estos elementos se combinan y se manipulan utilizando varios operadores de RxJava para lograr diferentes resultados.
+---
 
-## RCJAVA en Kotlin
+## 📌 Índice 📌
 
-1. Crear Observables: Usar Observable.just() o list.toObservable() para crear.
-2. Operadores: Modificar datos con map, filter, etc.
-3. Suscribirse: Usar subscribe() para recibir elementos.
-4. Desuscribirse: Llamar a dispose() para detener la suscripción.
-5. RxKotlin añade funciones de extensión y simplifica el código. Funciona bien con las características modernas de Kotlin como lambdas y corrutinas.
+1. [📚 Descripción General](#descripción-general)
+2. [🔍 Cómo Funciona](#cómo-funciona)
+    - [🧰 Recursos y Observables](#recursos-y-observables)
+    - [🔢 Primer Observable](#primer-observable)
+    - [🔡 Segundo Observable](#segundo-observable)
+    - [🔗 Combinar Observables](#combinar-observables)
+3. [🎣 Uso de Subjects](#uso-de-subjects)
+4. [♻️ Refactorización](#refactorización)
+5. [🏁 Cómo Ejecutar el Código](#cómo-ejecutar-el-código)
+6. [🛠 Requisitos](#requisitos)
 
-## Componentes y código
+---
 
-### Observables
+## 📚 Descripción General 📚
 
-- observable1
+Este proyecto demuestra cómo usar RxJava en Kotlin para trabajar con observables, subjects y cómo gestionar recursos mediante `CompositeDisposable`. El objetivo es mostrar cómo observables y subjects pueden emitir y transformar datos de manera eficiente.
 
-    1. Descripción: Este Observable emite números del 1 al 5.
-    ```
+---
 
-    val observable1 = Observable.interval(1, TimeUnit.SECONDS)
+## 🔍 Cómo Funciona 🔍
+
+### 🧰 Recursos y Observables 🧰
+
+Iniciamos con la creación de un `CompositeDisposable`, una bolsa para guardar todas nuestras suscripciones (disposables) de manera que se puedan liberar recursos fácilmente.
+
+También creamos un `PublishSubject` que actuará como un puente para recibir y emitir eventos.
+
+```kotlin
+val disposables = CompositeDisposable()
+val subject = PublishSubject.create<String>()
+```
+
+### 🔢 Primer Observable 🔢
+
+Este observable emite números del 1 al 5 cada segundo. Utilizamos `Observable.interval` para la emisión continua, limitamos la emisión a 5 elementos con `.take(5)` y transformamos los elementos emitidos sumándoles 1 con `.map`.
+
+```kotlin
+val observable1 = Observable.interval(1, TimeUnit.SECONDS)
     .take(5)
     .map { it + 1 }
-
-    ```
-
-    2. Subscripciones: Imprime cada número emitido y notifica cuando se completa.
-    ```
-    observable1.subscribe(
-    { value -> println("observable1 onNext: $value") },
-    { error -> println("observable1 onError: $error") },
-    { println("observable1 onComplete") }
-    )
-
-    ```
-
-- observable2
-
-    1. Descripción: Este Observable toma eventos de un PublishSubject y los convierte a mayúsculas.
-    ```
-    val subject = PublishSubject.create<String>()
-    val observable2 = subject.map { it.toUpperCase(Locale.getDefault()) }
-
-    ```
-
-    2. Subscripciones: Imprime cada cadena en mayúsculas y notifica errores si los hay.
-    ```
-
-    observable2.subscribe(
-    { value -> println("observable2 onNext: $value") },
-    { error -> println("observable2 onError: $error") }
-    )
-
-    ```
-
-## Subject
-
-- Tipo: PublishSubject<String>
-
 ```
+
+### 🔡 Segundo Observable 🔡
+
+Este observable toma cadenas emitidas por el `PublishSubject` y las convierte en mayúsculas usando el operador `.map`.
+
+```kotlin
+val observable2 = subject.map { it.uppercase() }
+```
+
+### 🔗 Combinar Observables 🔗
+
+Usamos `Single.zip` para combinar el último elemento emitido por `observable1` y el primer elemento emitido por `observable2`.
+
+```kotlin
+val zippedSingle = Single.zip(
+    observable1.last(0),
+    observable2.first(""),
+    { num, str -> "Número: $num, Cadena: $str" }
+)
+```
+
+## 🎣 Uso de Subjects 🎣
+
+El `PublishSubject` se utiliza para emitir eventos que son recogidos y transformados por `observable2`.
+
+```kotlin
 subject.onNext("hola")
 subject.onNext("mundo")
-
-
 ```
 
-## Single
+## ♻️ Refactorización ♻️
 
-- zippedSingle
+1. **Encapsulamiento de Lógica Común**: Hemos creado funciones específicas para encapsular lógicas comunes de creación y suscripción a observables.
+2. **Uso de Constantes para Valores Mágicos**: Introducimos constantes para facilitar la lectura y gestión del código.
+3. **Deprecación**: Hemos actualizado el uso de `toUpperCase()` a `uppercase()` para evitar advertencias de deprecación.
+4. **Pruebas**: Corregimos el código de prueba para eliminar referencias no resueltas y garantizar que estén alineadas con la lógica de negocio.
+5. **Documentación Mejorada**: Hemos mejorado los comentarios y documentación del código para una mejor comprensión.
 
-    1. Descripción: Este Single se forma mediante la combinación del último elemento emitido por observable1 y el primer elemento emitido por observable2.
+---
 
-    ```
+## 🏁 Cómo Ejecutar el Código 🏁
 
-    val zippedSingle = Single.zip(
-    observable1.lastOrError(),
-    observable2.firstOrError(),
-    BiFunction<Long, String, String> { num, str -> "Last of observable1: $num, First of observable2: $str" }
-    )
+1. Clone el repositorio
+2. Navegue hasta el directorio del proyecto
+3. Ejecute `./gradlew run`
 
-    
-    ```
+## 🛠 Requisitos 🛠
 
-    2. Subscripciones: Imprime la combinación de los elementos y notifica errores si los hay
+- JDK 1.8 o superior
+- RxJava 3.x
 
-    ```
-
-    zippedSingle.subscribe(
-    { value -> println("zippedSingle onSuccess: $value") },
-    { error -> println("zippedSingle onError: $error") }
-    )
-
-    
-    ```
-
-## Gestión de recursos
-
-- Para liberar recursos se usa CompositeDisposable.
-
-```
-
-val disposables = CompositeDisposable()
-
-disposables.addAll(
-    observable1.subscribe(/*...*/),
-    observable2.subscribe(/*...*/),
-    zippedSingle.subscribe(/*...*/)
-)
-
-// Al final del ciclo de vida
-disposables.dispose()
-
-```
-
-## Flujo de Ejecución
-
-1. Se inician las subscripciones a observable1, observable2, y zippedSingle.
-2. El PublishSubject emite las cadenas "hola" y "mundo".
-3. observable1 emite números del 1 al 5 cada segundo.
-4. zippedSingle combina el último número emitido por observable1 y la primera cadena emitida por observable2.
-5. CompositeDisposable se utiliza para liberar todos los recursos.
-
-
-## Diferencias con Java
-
-1. Sintaxis: Kotlin es más conciso, lo que facilita la lectura y escritura del código relacionado con Observables.
-
-2. Extensiones: Kotlin permite funciones de extensión, como en RxKotlin, que hacen más fácil trabajar con Observables.
-
-3. Seguridad de Tipos Nulos: Kotlin maneja nulos de manera más segura, lo que puede afectar al manejo de errores en Observables.
-
-- En resumen, el concepto de "Observable" es el mismo en Java y Kotlin, pero las diferencias en sintaxis y características del lenguaje hacen que la experiencia de trabajar con ellos sea ligeramente diferente.
-
-
-## Ejecución
-
-- Ejecuta gradle run o ./gradlew run si estás utilizando Gradle.
+---
