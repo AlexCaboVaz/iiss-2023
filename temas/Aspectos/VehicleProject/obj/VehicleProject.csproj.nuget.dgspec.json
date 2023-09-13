@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\aleja\\Downloads\\SEPTIEMBRE\\Aspectos\\VehicleProject\\VehicleProject.csproj": {}
+    "C:\\Users\\aleja\\Downloads\\SEPTIEMBRE\\Aspectos\\VehicleProject\\VehicleProject.csproj": {}
   },
   "projects": {
-    "c:\\Users\\aleja\\Downloads\\SEPTIEMBRE\\Aspectos\\VehicleProject\\VehicleProject.csproj": {
+    "C:\\Users\\aleja\\Downloads\\SEPTIEMBRE\\Aspectos\\VehicleProject\\VehicleProject.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\aleja\\Downloads\\SEPTIEMBRE\\Aspectos\\VehicleProject\\VehicleProject.csproj",
+        "projectUniqueName": "C:\\Users\\aleja\\Downloads\\SEPTIEMBRE\\Aspectos\\VehicleProject\\VehicleProject.csproj",
         "projectName": "VehicleProject",
-        "projectPath": "c:\\Users\\aleja\\Downloads\\SEPTIEMBRE\\Aspectos\\VehicleProject\\VehicleProject.csproj",
+        "projectPath": "C:\\Users\\aleja\\Downloads\\SEPTIEMBRE\\Aspectos\\VehicleProject\\VehicleProject.csproj",
         "packagesPath": "C:\\Users\\aleja\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\aleja\\Downloads\\SEPTIEMBRE\\Aspectos\\VehicleProject\\obj\\",
+        "outputPath": "C:\\Users\\aleja\\Downloads\\SEPTIEMBRE\\Aspectos\\VehicleProject\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\aleja\\AppData\\Roaming\\NuGet\\NuGet.Config"

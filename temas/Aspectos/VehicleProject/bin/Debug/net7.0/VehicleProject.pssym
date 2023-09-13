@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Symbols LinesOfCode="44" PostSharpLinesOfCode="0" EnhancedTypesCount="1" SchemaVersion="1" PostSharpVersion="2023.0.7.0" xmlns="http://schemas.postsharp.org/2.0/symbols">
-  <Class Class="#1=T:[VehicleProject]VehicleProject.EnsureFuelAspect">
+<Symbols LinesOfCode="57" PostSharpLinesOfCode="0" EnhancedTypesCount="1" SchemaVersion="1" PostSharpVersion="2023.0.7.0" xmlns="http://schemas.postsharp.org/2.0/symbols">
+  <Class Class="#1=T:[VehicleProject]VehicleProject.Aspects.EnsureFuelAspect">
     <Instance Declaration="#2=M:[VehicleProject]VehicleProject.Models.Vehicle::Move()" Id="9b73d80a00008005">
       <Target LinesAvoided="2">
         <JoinPoint Description="#3=Wrapped by advice(s) OnEntry" Ordinal="0" />
       </Target>
     </Instance>
   </Class>
-  <Class Class="#4=T:[VehicleProject]VehicleProject.Aspectos.LogAttribute">
+  <Class Class="#4=T:[VehicleProject]VehicleProject.Aspects.LogAttribute">
     <Instance Declaration="#5=M:[VehicleProject]VehicleProject.Models.Vehicle::Stop()" Id="9b73d80a00008006">
       <Target LinesAvoided="4">
         <JoinPoint Description="#6=Wrapped by advice(s) OnEntry, OnExit" />
@@ -19,7 +19,7 @@
       </Target>
     </Instance>
   </Class>
-  <Annotation Target="#8=M:[VehicleProject]VehicleProject.EnsureFuelAspect::OnEntry(PostSharp.Aspects.MethodExecutionArgs)" Arguments="#9=2" Description="#10=PostSharp estimates that 2 lines of code are saved every time this advice is applied. Use the [LinesOfCodeAvoided] attribute on the aspect or specify the LinesOfCodeAvoided property on the advice attribute to override this value." />
-  <Annotation Target="#11=M:[VehicleProject]VehicleProject.Aspectos.LogAttribute::OnEntry(PostSharp.Aspects.MethodExecutionArgs)" Arguments="#9" Description="#10" />
-  <Annotation Target="#12=M:[VehicleProject]VehicleProject.Aspectos.LogAttribute::OnExit(PostSharp.Aspects.MethodExecutionArgs)" Arguments="#9" Description="#10" />
+  <Annotation Target="#8=M:[VehicleProject]VehicleProject.Aspects.EnsureFuelAspect::OnEntry(PostSharp.Aspects.MethodExecutionArgs)" Arguments="#9=2" Description="#10=PostSharp estimates that 2 lines of code are saved every time this advice is applied. Use the [LinesOfCodeAvoided] attribute on the aspect or specify the LinesOfCodeAvoided property on the advice attribute to override this value." />
+  <Annotation Target="#11=M:[VehicleProject]VehicleProject.Aspects.LogAttribute::OnEntry(PostSharp.Aspects.MethodExecutionArgs)" Arguments="#9" Description="#10" />
+  <Annotation Target="#12=M:[VehicleProject]VehicleProject.Aspects.LogAttribute::OnExit(PostSharp.Aspects.MethodExecutionArgs)" Arguments="#9" Description="#10" />
 </Symbols>

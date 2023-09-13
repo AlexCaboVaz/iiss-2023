@@ -1,7 +1,8 @@
+// Aspecto para registrar la entrada y salida de métodos
 using PostSharp.Aspects;
 using System;
 
-namespace VehicleProject.Aspectos
+namespace VehicleProject.Aspects
 {
     [Serializable]
     public class LogAttribute : OnMethodBoundaryAspect
@@ -10,7 +11,7 @@ namespace VehicleProject.Aspectos
         {
             Console.WriteLine($"Entrando al método: {args.Method.Name}");
         }
-        
+
         public override void OnExit(MethodExecutionArgs args)
         {
             Console.WriteLine($"Saliendo del método: {args.Method.Name}");
